@@ -1,5 +1,15 @@
 from rps_strategies import *
 
+def get_player_input_console():
+    player_input = input('Select Rock (R), Paper (P), or Scissors (S).')
+    player_input = player_input.upper()
+
+    while player_input not in OPTIONS:
+        player_input = input('Select Rock (R), Paper (P), or Scissors (S).')
+        player_input = player_input.upper()
+    return player_input
+
+
 def rps(strategy='random'):
     global OPTIONS
     input1 = []
@@ -7,20 +17,18 @@ def rps(strategy='random'):
     outcomes = []
 
     for n in range(0, 10):
-        input1.append(input('Select Rock (R), Paper (P), or Scissors (S).'))
-        input1[n] = input1[n].upper()
-        while input1[n] not in OPTIONS:
-            input1[n] = input('Select Rock (R), Paper (P), or Scissors (S).')
-
+        # Computer chooses strategy before human (not that it matters, but makes it harder
+        # to accidently code a cheating computer)
         # Strategy for the first round is always random
         if n == 0:
             input2.append(select_strategy('random', input1, input2))
         else:
             input2.append(select_strategy(strategy, input1, input2))
 
+        # Player input
+        input1.append(get_player_input_console())
         outcomes.append(rps_base_game(input1[n], input2[n]))
-    return outcomes
-
+    return outcomes, input1, input2
 
 
 def rps_base_game(input1, input2):
