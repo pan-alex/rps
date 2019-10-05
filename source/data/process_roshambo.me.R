@@ -15,7 +15,7 @@ winner <- function(input1, input2){
     ifelse(input2 == 2, 1, 0)), NA)))))
 }
 
-setwd('../../')
+# setwd('../../')
 rps_raw <- read_xlsx('data/raw/roshambo.me.xlsx')
 
 
@@ -43,14 +43,14 @@ rps_data <- rps_data %>% mutate(
 # A more advanced version may also look at the opponent's moves.
 
 rps_p1 <- rps_data %>% 
-  mutate(throw = player_one_throw) %>%
-  select(game_id, round, throw) 
+  mutate(throw = player_one_throw, won = player_one_win) %>%
+  select(game_id, round, throw, won) 
   
 rps_p2 <- rps_data %>% 
-  mutate(throw = player_two_throw, game_id = game_id + max(game_id)) %>%
-  select(game_id, round, throw)
+  mutate(throw = player_two_throw, won = player_two_win, game_id = game_id + max(game_id)) %>%
+  select(game_id, round, throw, won)
 
-rps_p1_p2_rbind <- rbind(rps_p1, rps_p2)
+rps_p1_p2_rbind <- rbind(rps_p1, rps_p2) %>% filter(throw != 0)
 
 # Not super elegant but seems to work.
 rps_data_12_past_moves <- rps_p1_p2_rbind %>% 
@@ -65,41 +65,22 @@ rps_data_12_past_moves <- rps_p1_p2_rbind %>%
          minus9 = ifelse(round > lag(round), lag(minus8), NA),
          minus10 = ifelse(round > lag(round), lag(minus9), NA),
          minus11 = ifelse(round > lag(round), lag(minus10), NA),
-         minus12 = ifelse(round > lag(round), lag(minus11), NA))
+         minus12 = ifelse(round > lag(round), lag(minus11), NA),
+         won_minus1 = ifelse(round > lag(round), lag(won), NA),
+         won_minus2 = ifelse(round > lag(round), lag(won_minus1), NA),
+         won_minus3 = ifelse(round > lag(round), lag(won_minus2), NA),
+         won_minus4 = ifelse(round > lag(round), lag(won_minus3), NA),
+         won_minus5 = ifelse(round > lag(round), lag(won_minus4), NA),
+         won_minus6 = ifelse(round > lag(round), lag(won_minus5), NA),
+         won_minus7 = ifelse(round > lag(round), lag(won_minus6), NA),
+         won_minus8 = ifelse(round > lag(round), lag(won_minus7), NA),
+         won_minus9 = ifelse(round > lag(round), lag(won_minus8), NA),
+         won_minus10 = ifelse(round > lag(round), lag(won_minus9), NA),
+         won_minus11 = ifelse(round > lag(round), lag(won_minus10), NA),
+         won_minus12 = ifelse(round > lag(round), lag(won_minus11), NA))
 
 
 write_csv(rps_data, 'data/intermediate/rps_data_long.csv')
-write_csv(rps_data_12_past_moves, 'data/final/rps_data_12_past_moves.csv')
+write_csv(rps_data_12_past_moves, 'data/intermediate/rps_data_12_past_moves.csv')
 
 
-
-# Look at distribution of inputs
-table(rps_data$player_one_throw)
-table(rps_data$player_two_throw)    # Why is the player 2 forfeit rate 8x higher?
-
-# Are most forfeitures on the first round (would make sense if the opponent simply doesn't join the game)?
-# Answer: Yes. About 1/3 of first round games are a Player 2 forfeit, vs. just 1% for Player 1.
-# After round 1, the rates are similar ~1% (decreases as the # of rounds increases). 
-# Round 1 forfeits have nothing to do with the game itself.
-rps_forfeitures_per_game <- rps_data %>%
-  group_by(round) %>%
-  summarize(p1_forfeitures = sum(player_one_throw == 0),
-            p2_forfeitures = sum(player_two_throw == 0),
-            p1_forfeitures_percent = p1_forfeitures / length(player_one_throw),
-            p2_forfeitures_percent = p2_forfeitures / length(player_one_throw))
-
-
-# % of games that involve forfeits (exclude round 1 forfeits)
-# Only 2 games have a forfeit from both players, so we'll ignore overlap
-# Only about 1.7% of games past round 1 end in forfeiture, which is low enough to ignore.
-sum(rps_forfeitures_per_game$p1_forfeitures[-1] + rps_forfeitures_per_game$p2_forfeitures[-1]) / nrow(rps_data)
-
-
-
-# Summarize # of rounds per game
-rps_rounds_per_game <- rps_data %>%
-  group_by(game_id) %>%
-  summarize(rounds_per_game = length(game_round_id),
-            player_one_scores = sum(player_one_win, na.rm = T))
-
-table(rps_rounds_per_game$rounds_per_game)
