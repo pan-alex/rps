@@ -2,8 +2,7 @@ library(tidyverse)
 library(readxl)
 
 winner <- function(input1, input2){
-  ifelse(input1 == 0, NA,
-  ifelse(input2 == 0, NA,
+  ifelse(input1 == 0 | input2 == 0, NA,
   ifelse(input1 == 1,    
     ifelse(input2 == 1, 0,
     ifelse(input2 == 2, -1, 1)),
@@ -12,7 +11,7 @@ winner <- function(input1, input2){
     ifelse(input2 == 2, 0, -1)),
   ifelse(input1 == 3,    
     ifelse(input2 == 1, -1,
-    ifelse(input2 == 2, 1, 0)), NA)))))
+    ifelse(input2 == 2, 1, 0)), NA))))
 }
 
 # setwd('../../')
