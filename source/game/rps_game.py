@@ -21,9 +21,9 @@ def rps(strategy='random', n_rounds=10):
         # to accidently code a cheating computer)
         # Strategy for the first round is always random
         if n == 0:
-            input2.append(select_strategy('random', input1, input2))
+            input2.append(select_strategy('random', input1, input2, outcomes))
         else:
-            input2.append(select_strategy(strategy, input1, input2))
+            input2.append(select_strategy(strategy, input1, input2, outcomes))
 
         # Player input
         input1.append(get_player_input_console())
