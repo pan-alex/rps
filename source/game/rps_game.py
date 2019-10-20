@@ -1,5 +1,11 @@
 from source.game.rps_strategies import *
 
+def game_message(outcome):
+    if outcome == 0: message = "It's a draw."
+    elif outcome == -1: message = "You lose :("
+    elif outcome == 1: message = "You win!"
+    return message
+
 def get_player_input_console():
     player_input = input('Select Rock (R), Paper (P), or Scissors (S).')
     player_input = player_input.upper()
@@ -10,7 +16,7 @@ def get_player_input_console():
     return player_input
 
 
-def rps(strategy='random', n_rounds=10):
+def rps(player_input, strategy='random', n_rounds=10):
     global OPTIONS
     input1 = []
     input2 = []
@@ -26,12 +32,12 @@ def rps(strategy='random', n_rounds=10):
             input2.append(select_strategy(strategy, input1, input2, outcomes))
 
         # Player input
-        input1.append(get_player_input_console())
+        input1.append(player_input)
         outcomes.append(rps_round(input1[n], input2[n]))
     return outcomes, input1, input2
 
 
-def rps_round(input1, input2):
+def rps_round(input1, input2='R'):
     '''
     # Evaluates one round of RPS. This is the lowest level function for the game.
     :param input1: This is the player input. String. 'R', 'P', or 'S'.
@@ -53,10 +59,6 @@ def rps_round(input1, input2):
         elif input2 == 'R': outcome = -1
         elif input2 == 'P': outcome = 1
 
-    if outcome == 0: message = "It's a draw."
-    elif outcome == -1: message = "You lose :("
-    elif outcome == 1: message = "You win!"
-
-    print(f'You: {input1}. Opponent: {input2}. {message}')
-    return outcome
+    print(game_message(outcome))
+    return outcome, input1, input2
 
