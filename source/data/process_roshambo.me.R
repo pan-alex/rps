@@ -14,7 +14,7 @@ winner <- function(input1, input2){
     ifelse(input2 == 2, 1, 0)), NA))))
 }
 
-# setwd('../../')
+setwd('../../')
 rps_raw <- read_xlsx('data/raw/roshambo.me.xlsx')
 
 
