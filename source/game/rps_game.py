@@ -16,25 +16,25 @@ def get_player_input_console():
     return player_input
 
 
-def rps(player_input, strategy='random', n_rounds=10):
-    global OPTIONS
-    input1 = []
-    input2 = []
-    outcomes = []
-
-    for n in range(0, n_rounds):
-        # Computer chooses strategy before human (not that it matters, but makes it harder
-        # to accidently code a cheating computer)
-        # Strategy for the first round is always random
-        if n == 0:
-            input2.append(select_strategy('random', input1, input2, outcomes))
-        else:
-            input2.append(select_strategy(strategy, input1, input2, outcomes))
-
-        # Player input
-        input1.append(player_input)
-        outcomes.append(rps_round(input1[n], input2[n]))
-    return outcomes, input1, input2
+# def rps(player_input, strategy='random', n_rounds=10):
+#     global OPTIONS
+#     input1 = []
+#     input2 = []
+#     outcomes = []
+#
+#     for n in range(0, n_rounds):
+#         # Computer chooses strategy before human (not that it matters, but makes it harder
+#         # to accidently code a cheating computer)
+#         # Strategy for the first round is always random
+#         if n == 0:
+#             input2.append(select_strategy('random', input1, input2, outcomes))
+#         else:
+#             input2.append(select_strategy(strategy, input1, input2, outcomes))
+#
+#         # Player input
+#         input1.append(player_input)
+#         outcomes.append(rps_round(input1[n], input2[n]))
+#     return outcomes, input1, input2
 
 
 def rps_round(input1, input2='R'):
@@ -60,5 +60,5 @@ def rps_round(input1, input2='R'):
         elif input2 == 'P': outcome = 1
 
     print(game_message(outcome))
-    return outcome, input1, input2
+    return outcome
 
