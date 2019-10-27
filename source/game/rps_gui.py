@@ -24,42 +24,48 @@ def rps(player_input, strategy='random'):
     OUTCOMES.append(rps_round(INPUT1[N_ROUND], INPUT2[N_ROUND]))
 
 
-def click():
+# command for button press
+def button_press(last_player_input):
     global N_ROUND
-    # collect text from textbox
-    entered_text = text_entry.get()
-    text_entry.delete(0, 'end')
-    try:  # Check input is valid
-        entered_text = entered_text[0].upper()
-        logging.debug("entered_text " + entered_text)
-        OPTIONS.index(entered_text)
-        logging.debug("blah")
-        rps(player_input=entered_text)
-        N_ROUND += 1
-        message = f'You: {INPUT1[-1]}. Opponent: {INPUT2[-1]}. {game_message(OUTCOMES[-1])}'
-    except:
-        message = 'Your input must be "R", "P", or "S".'
+    button_to_throw = OPTIONS[last_player_input - 1]
+    rps(button_to_throw)
+    N_ROUND += 1
+    message = f'You: {INPUT1[-1]}. Opponent: {INPUT2[-1]}. {game_message(OUTCOMES[-1])}'
     output.insert(END, message + '\n')
 
 
-
-
+##### UI
 window = Tk()
-window.title('Test')
+window.title('Rock, Paper, Scissors!')
 window.configure(background='black')
 
-# Create a text entry box
-text_entry = Entry(window, width = 10, bg='white')
-text_entry.grid(row=2, column=0, sticky=N)
-button_entry = Button(window, text='Enter', width=0, command=click)
-button_entry.grid(row=3, column=0, sticky=N)
-#
-window.bind('<Return>', lambda event=None: button_entry.invoke())
+
+##### Input buttons
+
+# Button for "Rock"
+button_rock = Button(window, text='Rock (1)', width=10, height=3, command= lambda: button_press(1))
+button_rock.grid(row=4, column=0, sticky=W)
+window.bind('1', lambda event=None: button_rock.invoke())
+
+# Button for "Paper"
+button_paper = Button(window, text='Paper (2)', width=10, height=3, command= lambda: button_press(2))
+button_paper.grid(row=4, column=0, sticky=N)
+window.bind('2', lambda event=None: button_paper.invoke())
+
+# Button for "Scissors"
+button_scissors = Button(window, text='Scissors (3)', width=10, height=3, command= lambda: button_press(3))
+button_scissors.grid(row=4, column=0, sticky=E)
+window.bind('3', lambda event=None: button_scissors.invoke())
+
+
+####
 
 # Create an output box
 Label(window, text='History', fg='white', bg='black').grid(row=0, column=0, sticky=W)
-output = Text(window, wrap=CHAR, background='white')
+output = Text(window, wrap=CHAR, background='white', width=40)
 output.grid(row=1, column=0, sticky=N)
+
+
 
 
 window.mainloop()
