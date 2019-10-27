@@ -1,15 +1,21 @@
 from tkinter import *
 from source.game.rps_game import *
-import logging
-logging.getLogger().setLevel(logging.DEBUG)
 
+# Initialize UI
+window = Tk()
+window.title('Rock, Paper, Scissors!')
+window.configure(background='black')
+
+# Globals
 N_ROUND = 0
 INPUT1, INPUT2, OUTCOMES = [], [], []
 WINS, LOSSES, DRAWS = 0, 0, 0
-STRATEGY = 'beat_last'    # Default strategy
+STRATEGIES = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle', 'Strategy 4': 'basic_markov'}
+selected_strategy = StringVar(window)
+selected_strategy.set('Strategy 2')    # Set default strategy
 
 
-
+##### Functions
 def count_wins_losses_draws(outcome):
     wins = outcome.count(1)
     losses = outcome.count(-1)
@@ -19,7 +25,7 @@ def count_wins_losses_draws(outcome):
 
 def rps(player_input, strategy):
     global OPTIONS
-    global N_ROUND
+    global N_ROUND, INPUT1, INPUT2, OUTCOMES
     # Computer chooses strategy before human (not that it matters, but makes it harder
     # to accidently code a cheating computer)
     # Strategy for the first round is always random
@@ -34,9 +40,10 @@ def rps(player_input, strategy):
 
 
 # command for button press
-def game_button(button, strategy=STRATEGY):
-    global N_ROUND, INPUT1, INPUT2, OUTCOMES, WINS, LOSSES, DRAWS
+def game_button(button, computer_strategy=selected_strategy):
+    global N_ROUND, INPUT1, INPUT2, OUTCOMES, WINS, LOSSES, DRAWS, STRATEGIES
     throw = OPTIONS[button - 1]    # Player inputs are 1, 2, 3 (to keep buttons close together)
+    strategy = STRATEGIES[computer_strategy.get()]
     rps(throw, strategy)
     N_ROUND += 1
 
@@ -65,13 +72,6 @@ def reset_game():
     label_wins.config(text=WINS)
     label_losses.config(text=LOSSES)
     label_draws.config(text=DRAWS)
-
-
-
-##### UI
-window = Tk()
-window.title('Rock, Paper, Scissors!')
-window.configure(background='black')
 
 
 ##### Input buttons
@@ -119,7 +119,9 @@ Label(window, text='Settings', fg='white', bg='black', width=30).grid(row=0, col
 button_reset = Button(window, text='Reset Score', width=12, height=3, command=reset_game)
 button_reset.grid(row=4, column=1, sticky=N)
 
-
-
+# Select computer strategy
+Label(window, text="Computer Strategy", fg='white', bg='black').grid(row=4, column=1)
+picklist_strategy = OptionMenu(window, selected_strategy, *STRATEGIES)
+picklist_strategy.grid(row=5, column=1)
 
 window.mainloop()
