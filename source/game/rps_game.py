@@ -59,6 +59,5 @@ def rps_round(input1, input2='R'):
         elif input2 == 'R': outcome = -1
         elif input2 == 'P': outcome = 1
 
-    print(game_message(outcome))
+    # print(game_message(outcome))
     return outcome
-
