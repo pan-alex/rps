@@ -57,9 +57,9 @@ def strategy_basic_markov(input1, outcomes):
     col =  last_outcome + 1
 
     transition_probs = np.array(
-            # Outcome of last round
+            #                          Outcome of last round
             #       Lost (-1)      ;          Draw (0)    ;          Won (1)
-            [ #  R  ,   P  ,   S
+            [ #  R  ,   P  ,   S                                                      Player 1's last throw
              [[0.321, 0.369, 0.310], [0.340, 0.380, 0.280], [0.356, 0.376, 0.268]],    # Player played R
              [[0.298, 0.349, 0.353], [0.287, 0.367, 0.346], [0.379, 0.362, 0.259]],    # Player played P
              [[0.334, 0.314, 0.352], [0.349, 0.304, 0.346], [0.253, 0.387, 0.360]]     # Player played S
@@ -79,3 +79,6 @@ def select_strategy(strategy, input1, input2, outcomes):
         return strategy_cycle(input2)
     if strategy == 'basic_markov':
         return strategy_basic_markov(input1, outcomes)
+    else:
+        print('INVALID STRATEGY')
+        return 'R'
