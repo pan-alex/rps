@@ -49,6 +49,7 @@ def game_button(button, computer_strategy=selected_strategy):
 
     message = f'Round {N_ROUND}: You: {INPUT1[-1]}. Opponent: {INPUT2[-1]}. {game_message(OUTCOMES[-1])}'
     game_output.insert(END, message + '\n')
+    game_output.see(END)
 
     WINS, LOSSES, DRAWS = count_wins_losses_draws(OUTCOMES)
     label_wins.config(text=WINS)
@@ -64,6 +65,7 @@ def reset_game():
     global N_ROUND, INPUT1, INPUT2, OUTCOMES, WINS, LOSSES, DRAWS
     # Output message:
     game_output.insert(END, f'===FINAL SCORE: {WINS} WINS, {LOSSES} LOSSES, AND {DRAWS} TIES.===\n')
+    game_output.see(END)
     # Reset globals
     N_ROUND = 0
     INPUT1, INPUT2, OUTCOMES = [], [], []
@@ -72,6 +74,7 @@ def reset_game():
     label_wins.config(text=WINS)
     label_losses.config(text=LOSSES)
     label_draws.config(text=DRAWS)
+
 
 
 ##### Input buttons
@@ -99,13 +102,14 @@ Label(window, text='History', fg='white', bg='black').grid(row=3, column=0, stic
 game_output = Text(window, wrap=CHAR, background='white', width=60)
 game_output.grid(row=4, column=0, sticky=N)
 
+
 # Box to keep track of score
 Label(window, text='Wins', fg='white', bg='black').grid(row=1, column=0, sticky=W)
 label_wins = Label(window, text=WINS, fg='white', bg='black')
 label_wins.grid(row=2, column=0, sticky=W)
 
 Label(window, text='Losses', fg='white', bg='black').grid(row=1, column=0, sticky=N)
-label_losses= Label(window, text=LOSSES, fg='white', bg='black')
+label_losses = Label(window, text=LOSSES, fg='white', bg='black')
 label_losses.grid(row=2, column=0, sticky=N)
 
 Label(window, text='Ties', fg='white', bg='black').grid(row=1, column=0, sticky=E)
@@ -115,13 +119,13 @@ label_draws.grid(row=2, column=0, sticky=E)
 
 ##### Buttons for Settings
 # Reset game button
-Label(window, text='Settings', fg='white', bg='black', width=30).grid(row=0, column=1, sticky=N)
+Label(window, text='Settings', fg='white', bg='black', width=30).grid(row=3, column=1, sticky=N)
 button_reset = Button(window, text='Reset Score', width=12, height=3, command=reset_game)
 button_reset.grid(row=4, column=1, sticky=N)
 
 # Select computer strategy
-Label(window, text="Computer Strategy", fg='white', bg='black').grid(row=4, column=1)
+Label(window, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=N)
 picklist_strategy = OptionMenu(window, selected_strategy, *STRATEGIES)
-picklist_strategy.grid(row=5, column=1)
+picklist_strategy.grid(row=6, column=1, sticky=N)
 
 window.mainloop()
