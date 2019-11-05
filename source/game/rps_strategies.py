@@ -3,7 +3,7 @@ import numpy as np
 import logging
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.CRITICAL)
-OPTIONS = ['R', 'P', 'S']
+OPTIONS = ['R', 'P', 'S']    # Possible game inputs.
 
 def strategy_random():
     '''

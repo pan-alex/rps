@@ -1,5 +1,8 @@
 from source.game.rps_strategies import *
 
+class InvalidInput_RPS(Exception):
+    pass
+
 def game_message(outcome):
     if outcome == 0: message = "It's a draw."
     elif outcome == -1: message = "You lose :("
@@ -44,7 +47,11 @@ def rps_round(input1, input2='R'):
     :param input2: This is the computer (opponent) input. String. 'R', 'P', or 'S'.
     :return:
     '''
+    global OPTIONS
     input1, input2 = input1.upper(), input2.upper()
+
+    if (input1 not in OPTIONS) or (input2 not in OPTIONS):
+        raise InvalidInput_RPS('Input must be "R", "P", or "S".')
 
     if input1 == 'R':
         if input2 == 'R': outcome = 0
