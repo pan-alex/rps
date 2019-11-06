@@ -5,8 +5,9 @@ import logging
 logging.getLogger().setLevel(logging.CRITICAL)
 OPTIONS = ['R', 'P', 'S']    # Possible game inputs.
 
-class InvalidStrategy_RPS(Exception):
-    pass
+
+class InvalidInput_RPS(Exception): pass
+class InvalidStrategy_RPS(Exception): pass
 
 def strategy_random():
     '''
@@ -26,6 +27,7 @@ def strategy_cycle(input2):
     if last_input2 == 'R': return 'S'
     elif last_input2 == 'P': return 'R'
     elif last_input2 == 'S': return 'P'
+    else: raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
 
 
 def strategy_beat_last(input1):
@@ -39,7 +41,7 @@ def strategy_beat_last(input1):
     if last_input1 == 'R': return 'P'
     elif last_input1 == 'P': return 'S'
     elif last_input1 == 'S': return 'R'
-
+    else: raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
 
 def strategy_basic_markov(input1, outcomes):
     '''
@@ -54,10 +56,14 @@ def strategy_basic_markov(input1, outcomes):
         it is because it expects the player to play S with a probability of 0.321
     '''
     global OPTIONS
-    last_input1 = input1[-1]
-    last_outcome =  outcomes[-1]
-    row = OPTIONS.index(last_input1)    # row 0 = R, row 1 = P, row 2 = S
-    col =  last_outcome + 1
+    try:
+        last_input1 = input1[-1]
+        last_outcome =  outcomes[-1]
+        row = OPTIONS.index(last_input1)    # row 0 = R, row 1 = P, row 2 = S
+        col = last_outcome + 1
+    except:
+        raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
+
 
     transition_probs = np.array(
             #                          Outcome of last round
@@ -74,6 +80,15 @@ def strategy_basic_markov(input1, outcomes):
 
 
 def select_strategy(strategy, input1, input2, outcomes):
+    # If any of these fail there was an error in an earlier step
+    assert type(input1) == list
+    assert type(input2) == list
+    assert type(outcomes) == list
+    assert len(input1) == len(input2)
+    assert len(input1) == len(outcomes)
+    assert all([input in OPTIONS for input in input1])
+    assert all([input in OPTIONS for input in input2])
+
     if strategy == 'random':
         return strategy_random()
     elif strategy == 'beat_last':
@@ -82,3 +97,4 @@ def select_strategy(strategy, input1, input2, outcomes):
         return strategy_cycle(input2)
     elif strategy == 'basic_markov':
         return strategy_basic_markov(input1, outcomes)
+    else: raise InvalidStrategy_RPS('Invalid RPS strategy selected.')

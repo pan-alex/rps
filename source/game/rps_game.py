@@ -1,7 +1,5 @@
 from source.game.rps_strategies import *
 
-class InvalidInput_RPS(Exception):
-    pass
 
 def game_message(outcome):
     if outcome == 0: message = "It's a draw."
