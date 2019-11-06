@@ -5,6 +5,9 @@ import logging
 logging.getLogger().setLevel(logging.CRITICAL)
 OPTIONS = ['R', 'P', 'S']    # Possible game inputs.
 
+class InvalidStrategy_RPS(Exception):
+    pass
+
 def strategy_random():
     '''
     :return: Randomly selects and returns 'R', 'P', or 'S'.
@@ -73,12 +76,9 @@ def strategy_basic_markov(input1, outcomes):
 def select_strategy(strategy, input1, input2, outcomes):
     if strategy == 'random':
         return strategy_random()
-    if strategy == 'beat_last':
+    elif strategy == 'beat_last':
         return strategy_beat_last(input1)
-    if strategy == 'cycle':
+    elif strategy == 'cycle':
         return strategy_cycle(input2)
-    if strategy == 'basic_markov':
+    elif strategy == 'basic_markov':
         return strategy_basic_markov(input1, outcomes)
-    else:
-        print('INVALID STRATEGY')
-        return 'R'
