@@ -9,36 +9,6 @@ def game_message(outcome):
     elif outcome == 1: message = "You win!"
     return message
 
-def get_player_input_console():
-    player_input = input('Select Rock (R), Paper (P), or Scissors (S).')
-    player_input = player_input.upper()
-
-    while player_input not in OPTIONS:    # Not R, P, or S
-        player_input = input('Select Rock (R), Paper (P), or Scissors (S).')
-        player_input = player_input.upper()
-    return player_input
-
-
-# def rps(player_input, strategy='random', n_rounds=10):
-#     global OPTIONS
-#     input1 = []
-#     input2 = []
-#     outcomes = []
-#
-#     for n in range(0, n_rounds):
-#         # Computer chooses strategy before human (not that it matters, but makes it harder
-#         # to accidently code a cheating computer)
-#         # Strategy for the first round is always random
-#         if n == 0:
-#             input2.append(select_strategy('random', input1, input2, outcomes))
-#         else:
-#             input2.append(select_strategy(strategy, input1, input2, outcomes))
-#
-#         # Player input
-#         input1.append(player_input)
-#         outcomes.append(rps_round(input1[n], input2[n]))
-#     return outcomes, input1, input2
-
 
 def rps_round(input1, input2='R'):
     '''
