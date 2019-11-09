@@ -1,18 +1,68 @@
 from tkinter import *
 from source.game.rps_game import *
 
+
+class rps_gui:
+
+    def __init__(self, master):
+        frame = Frame(master)
+        frame.grid(row=0, column=0)
+
+        self.n_round = 0
+        self.input1, self.input2, self.outcomes = [], [], []
+        self.wins, self.losses, self.draws = 0, 0, 0
+        self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
+                      'Strategy 4': 'basic_markov'}
+        self.selected_strategy = StringVar(frame)
+        self.selected_strategy.set('Strategy 2')  # Set default strategy
+
+        ##### Input buttons
+        # Button for "Rock"
+        self.button_rock = Button(frame, text='Rock (1)', width=10, height=3, command=lambda: game_button(1))
+        self.button_rock.grid(row=6, column=0, sticky=W)
+        # frame.bind('1', lambda event=None: self.button_rock.invoke())
+
+        # # Button for "Paper"
+        self.button_paper = Button(frame, text='Paper (2)', width=10, height=3, command=lambda: game_button(2))
+        self.button_paper.grid(row=6, column=0, sticky=N)
+        # window.bind('2', lambda event=None: button_paper.invoke())
+
+        # # Button for "Scissors"
+        self.button_scissors = Button(frame, text='Scissors (3)', width=10, height=3, command=lambda: game_button(3))
+        self.button_scissors.grid(row=6, column=0, sticky=E)
+        # window.bind('3', lambda event=None: button_scissors.invoke())
+
+        # Create an output box
+        Label(frame, text='History', fg='white', bg='black').grid(row=3, column=0, sticky=N)
+        self.game_output = Text(frame, wrap=CHAR, background='white', width=60)
+        self.game_output.grid(row=4, column=0, sticky=N)
+
+
+    # command for button press
+    def game_button(self, button):
+        global N_ROUND, INPUT1, INPUT2, OUTCOMES, WINS, LOSSES, DRAWS, STRATEGIES
+        throw = OPTIONS[button - 1]    # Player inputs are 1, 2, 3 (to keep buttons close together)
+        strategy = self.strategies[self.selected_strategy.get()]
+        rps(throw, strategy)
+        self.n_round += 1
+
+        message = f'Round {self.n_round}: You: {self.input1[-1]}. Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}'
+        self.game_output.insert(END, message + '\n')
+        self.game_output.see(END)
+
+        WINS, LOSSES, DRAWS = count_wins_losses_draws(OUTCOMES)
+        label_wins.config(text=WINS)
+        label_losses.config(text=LOSSES)
+        label_draws.config(text=DRAWS)
+
+
+
+
+
 # Initialize UI
 window = Tk()
 window.title('Rock, Paper, Scissors!')
 window.configure(background='black')
-
-# Globals
-N_ROUND = 0
-INPUT1, INPUT2, OUTCOMES = [], [], []
-WINS, LOSSES, DRAWS = 0, 0, 0
-STRATEGIES = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle', 'Strategy 4': 'basic_markov'}
-selected_strategy = StringVar(window)
-selected_strategy.set('Strategy 2')    # Set default strategy
 
 
 ##### Functions
@@ -39,23 +89,6 @@ def rps(player_input, strategy):
     OUTCOMES.append(rps_round(INPUT1[N_ROUND], INPUT2[N_ROUND]))
 
 
-# command for button press
-def game_button(button, computer_strategy=selected_strategy):
-    global N_ROUND, INPUT1, INPUT2, OUTCOMES, WINS, LOSSES, DRAWS, STRATEGIES
-    throw = OPTIONS[button - 1]    # Player inputs are 1, 2, 3 (to keep buttons close together)
-    strategy = STRATEGIES[computer_strategy.get()]
-    rps(throw, strategy)
-    N_ROUND += 1
-
-    message = f'Round {N_ROUND}: You: {INPUT1[-1]}. Opponent: {INPUT2[-1]}. {game_message(OUTCOMES[-1])}'
-    game_output.insert(END, message + '\n')
-    game_output.see(END)
-
-    WINS, LOSSES, DRAWS = count_wins_losses_draws(OUTCOMES)
-    label_wins.config(text=WINS)
-    label_losses.config(text=LOSSES)
-    label_draws.config(text=DRAWS)
-
 
 def reset_game():
     '''
@@ -77,30 +110,9 @@ def reset_game():
 
 
 
-##### Input buttons
-
-# Button for "Rock"
-button_rock = Button(window, text='Rock (1)', width=10, height=3, command= lambda: game_button(1))
-button_rock.grid(row=6, column=0, sticky=W)
-window.bind('1', lambda event=None: button_rock.invoke())
-
-# Button for "Paper"
-button_paper = Button(window, text='Paper (2)', width=10, height=3, command= lambda: game_button(2))
-button_paper.grid(row=6, column=0, sticky=N)
-window.bind('2', lambda event=None: button_paper.invoke())
-
-# Button for "Scissors"
-button_scissors = Button(window, text='Scissors (3)', width=10, height=3, command= lambda: game_button(3))
-button_scissors.grid(row=6, column=0, sticky=E)
-window.bind('3', lambda event=None: button_scissors.invoke())
 
 
 ####
-
-# Create an output box
-Label(window, text='History', fg='white', bg='black').grid(row=3, column=0, sticky=N)
-game_output = Text(window, wrap=CHAR, background='white', width=60)
-game_output.grid(row=4, column=0, sticky=N)
 
 
 # Box to keep track of score
@@ -128,4 +140,6 @@ Label(window, text="Computer Strategy", fg='white', bg='black').grid(row=5, colu
 picklist_strategy = OptionMenu(window, selected_strategy, *STRATEGIES)
 picklist_strategy.grid(row=6, column=1, sticky=N)
 
+
+blah = rps_gui(window)
 window.mainloop()
