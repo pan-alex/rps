@@ -66,9 +66,15 @@ class rps_gui:
         picklist_strategy.grid(row=6, column=1, sticky=N)
 
 
-
-    # command for button press
     def game_button(self, button):
+        '''
+        :param button: Receives an input of 1, 2, or 3 when the Rock, Paper, or
+            Scissor button is pressed (or if the corresponding number [1, 2, 3] is pressed).
+
+        :return: Calls on `rps()` to evaluate the outcome of the round. Then it
+            returns a message indicating who won in the game_output text widget,
+            updates the score labels, and increments n_round by +1.
+        '''
         global OPTIONS
         throw = OPTIONS[button - 1]    # Player inputs are 1, 2, 3 (to keep buttons close together)
         strategy = self.strategies[self.selected_strategy.get()]
@@ -85,7 +91,19 @@ class rps_gui:
         self.label_losses.config(text=self.losses)
         self.label_draws.config(text=self.draws)
 
+
     def rps(self, player_input, strategy):
+        '''
+        :param player_input: The player's most recent input (i.e., for hte current round).
+            The class already stores past inputs and outcomes.
+
+        :param strategy: Strategy selected that the computer should use.
+
+        :return: Calls on `select_strategy()` from rps_strategies.py to evaluate
+            the game round. The function returns nothing, but appends the most
+            recent player and computer inputs and the outcome to the input/outcome
+            lists (stored as class attributes).
+        '''
         global OPTIONS
         # Computer chooses strategy before human (not that it matters, but makes it harder
         # to accidently code a cheating computer)
@@ -99,8 +117,11 @@ class rps_gui:
         self.input1.append(player_input)
         self.outcomes.append(rps_round(self.input1[self.n_round], self.input2[self.n_round]))
 
-    ##### Functions
+
     def count_wins_losses_draws(self, outcome):
+        '''
+        Counts the number of wins, losses, and draws in `outcome`
+        '''
         wins = outcome.count(1)
         losses = outcome.count(-1)
         draws = outcome.count(0)
@@ -109,22 +130,22 @@ class rps_gui:
 
     def reset_game(self):
         '''
-        Resets all globals to 0 or empty, except for STRATEGY
-        Resets all buttons. Prints a message that the game has reset and prints the final score.
+        Resets all globals (i.e., class attributes that track the game state) to
+            0 or empty, except for self.strategy. Resets score labels. Prints a
+            message that the game has reset and prints the final score.
         '''
         # Output message:
-        self.game_output.insert(END,
-            f'===FINAL SCORE: {self.wins} WINS, {self.losses} LOSSES, AND {self.draws} TIES.===\n')
+        reset_message = f'===FINAL SCORE: {self.wins} WINS, {self.losses} LOSSES, AND {self.draws} TIES.===\n'
+        self.game_output.insert(END, reset_message)
         self.game_output.see(END)
         # Reset globals
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
-        # Reset buttons
+        # Reset score labels
         self.label_wins.config(text=self.wins)
         self.label_losses.config(text=self.losses)
         self.label_draws.config(text=self.draws)
-
 
 
 # Initialize UI
