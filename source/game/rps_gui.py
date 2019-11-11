@@ -81,15 +81,8 @@ class rps_gui:
         self.rps(throw, strategy)
         self.n_round += 1
 
-        message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
-                   f'Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}')
-        self.game_output.insert(END, message + '\n')
-        self.game_output.see(END)
-
-        self.wins, self.losses, self.draws = self.count_wins_losses_draws(self.outcomes)
-        self.label_wins.config(text=self.wins)
-        self.label_losses.config(text=self.losses)
-        self.label_draws.config(text=self.draws)
+        self.update_text_output()
+        self.update_score_buttons()
 
 
     def rps(self, player_input, strategy):
@@ -126,6 +119,20 @@ class rps_gui:
         losses = outcome.count(-1)
         draws = outcome.count(0)
         return wins, losses, draws
+
+
+    def update_text_output(self):
+        message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
+                   f'Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}')
+        self.game_output.insert(END, message + '\n')
+        self.game_output.see(END)
+
+
+    def update_score_buttons(self):
+        self.wins, self.losses, self.draws = self.count_wins_losses_draws(self.outcomes)
+        self.label_wins.config(text=self.wins)
+        self.label_losses.config(text=self.losses)
+        self.label_draws.config(text=self.draws)
 
 
     def reset_game(self):
