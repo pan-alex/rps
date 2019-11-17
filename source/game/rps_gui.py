@@ -1,68 +1,78 @@
 from tkinter import *
 from source.game.rps_game import *
-
+import time
 
 class rps_gui:
 
     def __init__(self, master):
-        frame = Frame(master, bg='black')
-        frame.grid(row=0, column=0)
+        self.frame = Frame(master, bg='black')
+        self.frame.grid(row=0, column=0)
 
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
         self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
                       'Strategy 4': 'basic_markov'}
-        self.selected_strategy = StringVar(frame)
+        self.selected_strategy = StringVar(self.frame)
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
         ##### Input buttons
         # Button for "Rock"
-        self.button_rock = Button(frame, text='Rock (1)', width=10, height=3,
+        self.button_rock = Button(self.frame, text='Rock (1)', width=10, height=3,
                                   command=lambda: self.game_button(1))
         self.button_rock.grid(row=6, column=0, sticky=W)
         master.bind('1', lambda event=None: self.button_rock.invoke())
 
         # # Button for "Paper"
-        self.button_paper = Button(frame, text='Paper (2)', width=10, height=3,
+        self.button_paper = Button(self.frame, text='Paper (2)', width=10, height=3,
                                    command=lambda: self.game_button(2))
         self.button_paper.grid(row=6, column=0, sticky=N)
         master.bind('2', lambda event=None: self.button_paper.invoke())
 
         # # Button for "Scissors"
-        self.button_scissors = Button(frame, text='Scissors (3)', width=10, height=3,
+        self.button_scissors = Button(self.frame, text='Scissors (3)', width=10, height=3,
                                       command=lambda: self.game_button(3))
         self.button_scissors.grid(row=6, column=0, sticky=E)
         master.bind('3', lambda event=None: self.button_scissors.invoke())
 
         # Create an output box
-        Label(frame, text='History', fg='white', bg='black').grid(row=3, column=0, sticky=N)
-        self.game_output = Text(frame, wrap=CHAR, background='white', width=60)
-        self.game_output.grid(row=4, column=0, sticky=N)
+        # Label(self.frame, text='History', fg='white', bg='black').grid(row=3, column=0, sticky=N)
+        # self.game_output = Text(self.frame, wrap=CHAR, background='white', width=60)
+        # self.game_output.grid(row=4, column=0, sticky=N)
+
+
+##################### Trying to do something with images
+
+        self.game_output_canvas = Canvas(self.frame, height=700, width=700)
+        self.game_output_canvas.grid(row=4, column=0, sticky=N)
+
+        self.button_move = Button(self.frame, text='Move image', command = self.move_image)
+        self.button_move.grid(row=4, column=1)
+#####################
 
         # Box to keep track of score
-        Label(frame, text='Wins', fg='white', bg='black').grid(row=1, column=0, sticky=W)
-        self.label_wins = Label(frame, text=self.wins, fg='white', bg='black')
+        Label(self.frame, text='Wins', fg='white', bg='black').grid(row=1, column=0, sticky=W)
+        self.label_wins = Label(self.frame, text=self.wins, fg='white', bg='black')
         self.label_wins.grid(row=2, column=0, sticky=W)
 
-        Label(frame, text='Losses', fg='white', bg='black').grid(row=1, column=0, sticky=N)
-        self.label_losses = Label(frame, text=self.losses, fg='white', bg='black')
+        Label(self.frame, text='Losses', fg='white', bg='black').grid(row=1, column=0, sticky=N)
+        self.label_losses = Label(self.frame, text=self.losses, fg='white', bg='black')
         self.label_losses.grid(row=2, column=0, sticky=N)
 
-        Label(frame, text='Ties', fg='white', bg='black').grid(row=1, column=0, sticky=E)
-        self.label_draws = Label(frame, text=self.draws, fg='white', bg='black')
+        Label(self.frame, text='Ties', fg='white', bg='black').grid(row=1, column=0, sticky=E)
+        self.label_draws = Label(self.frame, text=self.draws, fg='white', bg='black')
         self.label_draws.grid(row=2, column=0, sticky=E)
 
 
         ##### Buttons for Settings
         # Reset game button
-        Label(frame, text='Settings', fg='white', bg='black', width=30).grid(row=3, column=1, sticky=N)
-        button_reset = Button(frame, text='Reset Score', width=12, height=3, command=self.reset_game)
+        Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=3, column=1, sticky=N)
+        button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
         button_reset.grid(row=4, column=1, sticky=N)
 
         # Select computer strategy
-        Label(frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=N)
-        picklist_strategy = OptionMenu(frame, self.selected_strategy, *self.strategies)
+        Label(self.frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=N)
+        picklist_strategy = OptionMenu(self.frame, self.selected_strategy, *self.strategies)
         picklist_strategy.grid(row=6, column=1, sticky=N)
 
 
@@ -76,12 +86,15 @@ class rps_gui:
             updates the score labels, and increments n_round by +1.
         '''
         global OPTIONS
-        throw = OPTIONS[button - 1]    # Player inputs are 1, 2, 3 (to keep buttons close together)
+        input_as_number = button - 1     # Player inputs are 1, 2, 3 (to keep buttons close together)
+        throw = OPTIONS[input_as_number]
         strategy = self.strategies[self.selected_strategy.get()]
         self.rps(throw, strategy)
         self.n_round += 1
 
-        self.update_text_output()
+        # self.update_text_output()
+        self.move_image()
+        self.update_image_output(input_as_number)
         self.update_score_buttons()
 
 
@@ -120,6 +133,38 @@ class rps_gui:
         draws = outcome.count(0)
         return wins, losses, draws
 
+##################### Trying to do something with images
+    def add_image_to_canvas(self, input_as_number):
+        if input_as_number == 0:
+            file = 'rps_rock1.png'
+        elif input_as_number == 1:
+            file = 'rps_paper1.png'
+        elif input_as_number == 2:
+            file = 'rps_scissors1.png'
+        else:
+            raise InvalidInput_RPS('Cannot select image; invalid input')
+        self.rock_pi = PhotoImage(master=self.game_output_canvas, file=file)
+        # paper_pi = PhotoImage(master=game_output_canvas, file='rps_paper1.png')
+        # scissors_pi = PhotoImage(master=game_output_canvas, file='rps_scissors1.png')
+        self.rock_image = self.game_output_canvas.create_image(100, 600, image=self.rock_pi)
+        # paper_image = game_output_canvas.create_image(500, 500, image=paper_pi)
+        # scissors_image = game_output_canvas.create_image(500, 500, image=scissors_pi)
+
+
+    def update_image_output(self, input_as_number):
+        self.add_image_to_canvas(input_as_number)
+
+
+    def move_image(self):
+        try:
+            self.game_output_canvas.move(0, -100)
+            print('moved object')
+        except:
+            print('no object to move')
+            pass
+
+#####################
+
 
     def update_text_output(self):
         message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
@@ -157,6 +202,7 @@ class rps_gui:
 
 # Initialize UI
 root = Tk()
+root.geometry('880x850+1000+0')
 root.title('Rock, Paper, Scissors!')
 window = rps_gui(root)
 root.mainloop()
