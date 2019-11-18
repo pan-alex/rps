@@ -8,15 +8,22 @@ class rps_gui:
         self.frame = Frame(master, bg='black')
         self.frame.grid(row=0, column=0)
 
+        ##### Define global attributes
+        # Globals that must be reset when the game resets
+        self.p1_throw_history = []
+        self.p2_throw_history = []
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
+
+        # Strategy doesn't change until the player chooses a new one
         self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
                       'Strategy 4': 'basic_markov'}
         self.selected_strategy = StringVar(self.frame)
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
-        ##### Input buttons
+
+        ##### Define basic elements of GUI (buttons, canvas, scroll bar)
         # Button for "Rock"
         self.button_rock = Button(self.frame, text='Rock (1)', width=10, height=3,
                                   command=lambda: self.game_button(1))
@@ -43,11 +50,14 @@ class rps_gui:
 
 ##################### Trying to do something with images
 
-        self.game_output_canvas = Canvas(self.frame, height=700, width=700)
+        self.game_output_canvas = Canvas(self.frame, height=700, width=400)
         self.game_output_canvas.grid(row=4, column=0, sticky=N)
 
-        self.button_move = Button(self.frame, text='Move image', command = self.move_image)
-        self.button_move.grid(row=4, column=1)
+
+        # self.scrollbar = Scrollbar(self.frame, orient=VERTICAL)
+        # self.scrollbar.grid(row=0, column=2)
+        # self.scrollbar.config(command=self.game_output_canvas.yview)
+
 #####################
 
         # Box to keep track of score
@@ -93,8 +103,9 @@ class rps_gui:
         self.n_round += 1
 
         # self.update_text_output()
-        self.move_image()
-        self.update_image_output(input_as_number)
+        # Update the dashboard (move images, insert new image, change scores)
+        self.game_output_canvas.move(ALL, 0, -70)
+        self.update_image_output()
         self.update_score_buttons()
 
 
@@ -134,43 +145,50 @@ class rps_gui:
         return wins, losses, draws
 
 ##################### Trying to do something with images
-    def add_image_to_canvas(self, input_as_number):
-        if input_as_number == 0:
-            file = 'rps_rock1.png'
-        elif input_as_number == 1:
-            file = 'rps_paper1.png'
-        elif input_as_number == 2:
-            file = 'rps_scissors1.png'
-        else:
-            raise InvalidInput_RPS('Cannot select image; invalid input')
-        self.rock_pi = PhotoImage(master=self.game_output_canvas, file=file)
-        # paper_pi = PhotoImage(master=game_output_canvas, file='rps_paper1.png')
-        # scissors_pi = PhotoImage(master=game_output_canvas, file='rps_scissors1.png')
-        self.rock_image = self.game_output_canvas.create_image(100, 600, image=self.rock_pi)
-        # paper_image = game_output_canvas.create_image(500, 500, image=paper_pi)
-        # scissors_image = game_output_canvas.create_image(500, 500, image=scissors_pi)
+    def add_image_to_canvas_p1(self):
+        last_input = OPTIONS.index(self.input1[-1])
+        if last_input == 0: file = 'data/images/rps_rock1.png'
+        elif last_input == 1: file = 'data/images/rps_paper1.png'
+        elif last_input == 2: file = 'data/images/rps_scissors1.png'
+        else: raise InvalidInput_RPS(f'Invalid input: {last_input}')
+
+        pi_throw = PhotoImage(master=self.game_output_canvas, file=file)
+        self.game_output_canvas.create_image(75, 665, image=pi_throw)
+        self.p1_throw_history.append(pi_throw)    # Keeps track of image representations on the Canvas
 
 
-    def update_image_output(self, input_as_number):
-        self.add_image_to_canvas(input_as_number)
+    def add_image_to_canvas_p2(self):
+        last_input = OPTIONS.index(self.input2[-1])
+        if last_input == 0: file = 'data/images/rps_rock2.png'
+        elif last_input == 1: file = 'data/images/rps_paper2.png'
+        elif last_input == 2: file = 'data/images/rps_scissors2.png'
+        else: raise InvalidInput_RPS(f'Invalid input: {last_input}')
+
+        pi_throw = PhotoImage(master=self.game_output_canvas, file=file)
+        self.game_output_canvas.create_image(272, 665, image=pi_throw)
+        self.p2_throw_history.append(pi_throw)    # Keeps track of image representations on the Canvas
 
 
-    def move_image(self):
-        try:
-            self.game_output_canvas.move(0, -100)
-            print('moved object')
-        except:
-            print('no object to move')
-            pass
+
+    def update_image_output(self):
+        self.add_image_to_canvas_p1()
+        self.add_image_to_canvas_p2()
+    #
+    #
+    # def move_image(self):
+    #     try:
+    #     except:
+    #         print('no image to move')
+    #         pass
 
 #####################
 
 
-    def update_text_output(self):
-        message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
-                   f'Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}')
-        self.game_output.insert(END, message + '\n')
-        self.game_output.see(END)
+    # def update_text_output(self):
+    #     message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
+    #                f'Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}')
+    #     self.game_output.insert(END, message + '\n')
+    #     self.game_output.see(END)
 
 
     def update_score_buttons(self):
@@ -186,11 +204,11 @@ class rps_gui:
             0 or empty, except for self.strategy. Resets score labels. Prints a
             message that the game has reset and prints the final score.
         '''
-        # Output message:
-        reset_message = f'===FINAL SCORE: {self.wins} WINS, {self.losses} LOSSES, AND {self.draws} TIES.===\n'
-        self.game_output.insert(END, reset_message)
-        self.game_output.see(END)
+        # Clear canvas
+        self.game_output_canvas.delete('all')
         # Reset globals
+        self.p1_throw_history = []
+        self.p2_throw_history = []
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
@@ -202,7 +220,7 @@ class rps_gui:
 
 # Initialize UI
 root = Tk()
-root.geometry('880x850+1000+0')
+root.geometry('+1000+0')    # Make it appear offset
 root.title('Rock, Paper, Scissors!')
 window = rps_gui(root)
 root.mainloop()
