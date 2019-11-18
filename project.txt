@@ -1,0 +1,25 @@
+To Do:
+- Change the output of the game results from text to image-based (appears to be easier with OOP)
+	+ Add images in response to player 1 input
+	+ Add images in response to player 2 input
+	+ Keep a history of past 10 turns in the form of images
+		+ Find a way to add multiple image objects cleanly
+		+ Find a way to move multiple image objects together cleanly
+	+ Every time a new turn is played, move up all other images
+	- Add a scroll bar to the canvas so that the history can be seen?
+	- Change the colour of the image so that it is obvious who won
+	- Grey-out past moves
+	- 
+
+- Implement machine learning algos to work in real-time
+
+- Train additional models to play with
+
+
+Done:
++ Start a game / reset a game
++ To allow button and keyboard input
++ Keep track of score / history
++ maybe: selection of opponent strategy
++ Add unit tests
++ Change GUI to object-oriented
