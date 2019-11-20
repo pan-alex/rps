@@ -23,28 +23,29 @@ class rps_gui:
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
 
-        ##### Define basic elements of GUI (buttons, canvas, scroll bar)
+        ##### Define basic elements of GUI (buttons, canvas)  [Column 0]
+        # Canvas for RPS image outputs
+        self.game_output_canvas = Canvas(self.frame, height=700, width=400)
+        self.game_output_canvas.grid(row=4, column=0, rowspan=10, sticky=N)
+
         # Button for "Rock"
         self.button_rock = Button(self.frame, text='Rock (1)', width=10, height=3,
                                   command=lambda: self.game_button(1))
-        self.button_rock.grid(row=6, column=0, sticky=W)
+        self.button_rock.grid(row=14, column=0, sticky=W)
         master.bind('1', lambda event=None: self.button_rock.invoke())
 
         # Button for "Paper"
         self.button_paper = Button(self.frame, text='Paper (2)', width=10, height=3,
                                    command=lambda: self.game_button(2))
-        self.button_paper.grid(row=6, column=0, sticky=N)
+        self.button_paper.grid(row=14, column=0, sticky=N)
         master.bind('2', lambda event=None: self.button_paper.invoke())
 
         # Button for "Scissors"
         self.button_scissors = Button(self.frame, text='Scissors (3)', width=10, height=3,
                                       command=lambda: self.game_button(3))
-        self.button_scissors.grid(row=6, column=0, sticky=E)
+        self.button_scissors.grid(row=14, column=0, sticky=E)
         master.bind('3', lambda event=None: self.button_scissors.invoke())
 
-        # Canvas for RPS image outputs
-        self.game_output_canvas = Canvas(self.frame, height=700, width=400)
-        self.game_output_canvas.grid(row=4, column=0, sticky=N)
 
         # Box to keep track of score
         Label(self.frame, text='Wins', fg='white', bg='black').grid(row=1, column=0, sticky=W)
@@ -59,14 +60,15 @@ class rps_gui:
         self.label_draws = Label(self.frame, text=self.draws, fg='white', bg='black')
         self.label_draws.grid(row=2, column=0, sticky=E)
 
-        ##### Buttons for Settings
+        ##### Buttons for Settings [Column 1]
+        Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=1, column=1, sticky=S)
+
         # Reset game button
-        Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=3, column=1, sticky=N)
         button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
         button_reset.grid(row=4, column=1, sticky=N)
 
         # Select computer strategy
-        Label(self.frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=N)
+        Label(self.frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=S)
         picklist_strategy = OptionMenu(self.frame, self.selected_strategy, *self.strategies)
         picklist_strategy.grid(row=6, column=1, sticky=N)
 

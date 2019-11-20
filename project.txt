@@ -10,7 +10,9 @@ To Do:
 	+ Change the colour of the image so that it is obvious who won
 	- Grey-out past moves
 
-- Re-organize GUI to fit within a smaller screen or find a way to re-adjust widget/window sizes without cutting off widgets
++ Re-organize GUI to fit within a smaller screen or find a way to re-adjust widget/window sizes without cutting off widgets
+	+ Re-organized GUI grid, which helps it fit within a smaller screen.
+	- Still have not: Found a way to re-adjust widget/window sizes without cutting off widgets
 
 - Implement machine learning algos to work in real-time
 
