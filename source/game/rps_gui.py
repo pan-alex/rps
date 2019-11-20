@@ -105,7 +105,7 @@ class rps_gui:
         # self.update_text_output()
         # Update the dashboard (move images, insert new image, change scores)
         self.game_output_canvas.move(ALL, 0, -70)
-        self.update_image_output()
+        self.add_rps_image_to_canvas()
         self.update_score_buttons()
 
 
@@ -145,41 +145,38 @@ class rps_gui:
         return wins, losses, draws
 
 ##################### Trying to do something with images
-    def add_image_to_canvas_p1(self):
-        last_input = OPTIONS.index(self.input1[-1])
-        if last_input == 0: file = 'data/images/rps_rock1.png'
-        elif last_input == 1: file = 'data/images/rps_paper1.png'
-        elif last_input == 2: file = 'data/images/rps_scissors1.png'
-        else: raise InvalidInput_RPS(f'Invalid input: {last_input}')
+    def add_rps_image_to_canvas(self):
+        # Add player 1 image
+        image_path1 = self.determine_image_path(player=1)
+        pi_throw1 = PhotoImage(master=self.game_output_canvas, file=image_path1)
+        self.game_output_canvas.create_image(75, 665, image=pi_throw1)
+        self.p1_throw_history.append(pi_throw1)    # Keeps track of image representations on the Canvas
 
-        pi_throw = PhotoImage(master=self.game_output_canvas, file=file)
-        self.game_output_canvas.create_image(75, 665, image=pi_throw)
-        self.p1_throw_history.append(pi_throw)    # Keeps track of image representations on the Canvas
-
-
-    def add_image_to_canvas_p2(self):
-        last_input = OPTIONS.index(self.input2[-1])
-        if last_input == 0: file = 'data/images/rps_rock2.png'
-        elif last_input == 1: file = 'data/images/rps_paper2.png'
-        elif last_input == 2: file = 'data/images/rps_scissors2.png'
-        else: raise InvalidInput_RPS(f'Invalid input: {last_input}')
-
-        pi_throw = PhotoImage(master=self.game_output_canvas, file=file)
-        self.game_output_canvas.create_image(272, 665, image=pi_throw)
-        self.p2_throw_history.append(pi_throw)    # Keeps track of image representations on the Canvas
+        # Add player 2 image
+        image_path2 = self.determine_image_path(player=2)
+        pi_throw2 = PhotoImage(master=self.game_output_canvas, file=image_path2)
+        self.game_output_canvas.create_image(272, 665, image=pi_throw2)
+        self.p2_throw_history.append(pi_throw2)    # Keeps track of image representations on the Canvas
 
 
+    def determine_image_path(self, player):
+        assert player == 1 or player == 2
+        # Path to images folder
+        folder_path = 'data/images/'
+        if player == 1:
+            # Use player 1 input; 1 represents P1 win
+            last_input = self.input1[-1]
+            if self.outcomes[-1] == 1: won = '_won'
+            else: won = ''
+        else:
+            # Use player 2 input; -1 represents P2 win
+            last_input = self.input2[-1]
+            if self.outcomes[-1] == -1: won = '_won'
+            else: won = ''
 
-    def update_image_output(self):
-        self.add_image_to_canvas_p1()
-        self.add_image_to_canvas_p2()
-    #
-    #
-    # def move_image(self):
-    #     try:
-    #     except:
-    #         print('no image to move')
-    #         pass
+        # Example path: 'data/images/rps_R1_won.png'
+        image_path = (folder_path + 'rps_' + last_input + str(player) + won + '.png')
+        return image_path
 
 #####################
 
