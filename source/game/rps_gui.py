@@ -30,35 +30,21 @@ class rps_gui:
         self.button_rock.grid(row=6, column=0, sticky=W)
         master.bind('1', lambda event=None: self.button_rock.invoke())
 
-        # # Button for "Paper"
+        # Button for "Paper"
         self.button_paper = Button(self.frame, text='Paper (2)', width=10, height=3,
                                    command=lambda: self.game_button(2))
         self.button_paper.grid(row=6, column=0, sticky=N)
         master.bind('2', lambda event=None: self.button_paper.invoke())
 
-        # # Button for "Scissors"
+        # Button for "Scissors"
         self.button_scissors = Button(self.frame, text='Scissors (3)', width=10, height=3,
                                       command=lambda: self.game_button(3))
         self.button_scissors.grid(row=6, column=0, sticky=E)
         master.bind('3', lambda event=None: self.button_scissors.invoke())
 
-        # Create an output box
-        # Label(self.frame, text='History', fg='white', bg='black').grid(row=3, column=0, sticky=N)
-        # self.game_output = Text(self.frame, wrap=CHAR, background='white', width=60)
-        # self.game_output.grid(row=4, column=0, sticky=N)
-
-
-##################### Trying to do something with images
-
+        # Canvas for RPS image outputs
         self.game_output_canvas = Canvas(self.frame, height=700, width=400)
         self.game_output_canvas.grid(row=4, column=0, sticky=N)
-
-
-        # self.scrollbar = Scrollbar(self.frame, orient=VERTICAL)
-        # self.scrollbar.grid(row=0, column=2)
-        # self.scrollbar.config(command=self.game_output_canvas.yview)
-
-#####################
 
         # Box to keep track of score
         Label(self.frame, text='Wins', fg='white', bg='black').grid(row=1, column=0, sticky=W)
@@ -72,7 +58,6 @@ class rps_gui:
         Label(self.frame, text='Ties', fg='white', bg='black').grid(row=1, column=0, sticky=E)
         self.label_draws = Label(self.frame, text=self.draws, fg='white', bg='black')
         self.label_draws.grid(row=2, column=0, sticky=E)
-
 
         ##### Buttons for Settings
         # Reset game button
@@ -104,6 +89,7 @@ class rps_gui:
 
         # self.update_text_output()
         # Update the dashboard (move images, insert new image, change scores)
+        # Note the move of -70 is based on images of height 70px.
         self.game_output_canvas.move(ALL, 0, -70)
         self.add_rps_image_to_canvas()
         self.update_score_buttons()
@@ -144,14 +130,19 @@ class rps_gui:
         draws = outcome.count(0)
         return wins, losses, draws
 
-##################### Trying to do something with images
+
     def add_rps_image_to_canvas(self):
+        '''
+        :return: Adds images of rock, paper, of scissors hands to the bottom of the canvas.
+            The hand is red for the player that won.
+        '''
+        # Note the canvas image coordinates are based on a 400x700 canvas, and
+        # is designed to fit 10 rounds worth of images in the canvas.
         # Add player 1 image
         image_path1 = self.determine_image_path(player=1)
         pi_throw1 = PhotoImage(master=self.game_output_canvas, file=image_path1)
         self.game_output_canvas.create_image(75, 665, image=pi_throw1)
         self.p1_throw_history.append(pi_throw1)    # Keeps track of image representations on the Canvas
-
         # Add player 2 image
         image_path2 = self.determine_image_path(player=2)
         pi_throw2 = PhotoImage(master=self.game_output_canvas, file=image_path2)
@@ -168,7 +159,7 @@ class rps_gui:
             last_input = self.input1[-1]
             if self.outcomes[-1] == 1: won = '_won'
             else: won = ''
-        else:
+        elif player == 2:
             # Use player 2 input; -1 represents P2 win
             last_input = self.input2[-1]
             if self.outcomes[-1] == -1: won = '_won'
@@ -177,15 +168,6 @@ class rps_gui:
         # Example path: 'data/images/rps_R1_won.png'
         image_path = (folder_path + 'rps_' + last_input + str(player) + won + '.png')
         return image_path
-
-#####################
-
-
-    # def update_text_output(self):
-    #     message = (f'Round {self.n_round}: You: {self.input1[-1]}. '
-    #                f'Opponent: {self.input2[-1]}. {game_message(self.outcomes[-1])}')
-    #     self.game_output.insert(END, message + '\n')
-    #     self.game_output.see(END)
 
 
     def update_score_buttons(self):
