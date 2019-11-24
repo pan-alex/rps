@@ -1,16 +1,15 @@
 import pytest
-from source.game.rps_game import *
+from source.game.rps_strategies import *
 
 
 def test_rps_round():
     with pytest.raises(InvalidInput_RPS):
-        rps_round('e', 'p')
-        rps_round('R', '1')
-    with pytest.raises(AttributeError):
-        rps_round(0, 'S')
-    assert rps_round('R', 'P') == -1    # loss
-    assert rps_round('S', 'S') == 0    # tie
-    assert rps_round('P', 'R') == 1    # win
+        rps_round(4, 5)
+        rps_round(1, 0)
+        rps_round('R', 'P')
+    assert rps_round(1, 2) == -1    # loss
+    assert rps_round(3, 3) == 0    # tie
+    assert rps_round(2, 1) == 1    # win
 
 
 def test_select_strategy():
@@ -21,22 +20,22 @@ def test_select_strategy():
         along the way.
     '''
     with pytest.raises(InvalidStrategy_RPS):
-        select_strategy('RANDOM', ['R'], ['P'], [-1])
-        select_strategy('basic markov', ['R'], ['P'], [-1])
+        select_strategy('RANDOM', [1], [2], [-1])
+        select_strategy('basic markov', [1], [2], [-1])
     with pytest.raises(AssertionError):
         # Test that inputs and `outcomes` are lists
-        select_strategy('random', 'R', ['S'], [-1])
-        select_strategy('random', ['R'], 'R', [1])
-        select_strategy('random', ['R'], ['S'], 1)
+        select_strategy('random', 1, [3], [-1])
+        select_strategy('random', [1], 1, [1])
+        select_strategy('random', [1], [3], 1)
         # Inputs and `outcomes` are always the same length
-        select_strategy('basic_markov', ['R', 'R'], ['R'], [1])
-        select_strategy('beat_last', ['R'], ['R'], [1, 0])
-        select_strategy('beat_last', ['R'], ['R'], [])
-        # Inputs should only contain 'R', 'P', 'S'
-        select_strategy('random', ['W', 'R'], ['S', 'R'], [0, 0])
-        select_strategy('random', ['R', 'R'], ['!', 'R'], [0, 0])
-        select_strategy('cycle', ['R', 'R', 'P', 'R'], ['R', 'S', 'S', 'W'], [0, 1, -1, 0])
-        select_strategy('beat_last', ['R', 'S', 'P', 'x'], ['R', 'R' 'S', 'P'], [0, -1, -1, 0])
+        select_strategy('basic_markov', [1, 1], [1], [1])
+        select_strategy('beat_last', [1], [1], [1, 0])
+        select_strategy('beat_last', [1], [1], [])
+        # Inputs should only contain 1, 2, 3
+        select_strategy('random', [999, 1], [3, 1], [0, 0])
+        select_strategy('random', [1, 1], ['R', 1], [0, 0])
+        select_strategy('cycle', [1, 1, 2, 1], [1, 3, 3, 'P'], [0, 1, -1, 0])
+        select_strategy('beat_last', [1, 3, 2, 0.0], [1, 1, 3, 2], [0, -1, -1, 0])
 
 
 if __name__ == '__main__':
