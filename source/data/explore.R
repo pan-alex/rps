@@ -1,6 +1,6 @@
 library(tidyverse)
 options(digits=3)
-
+setwd('../..')
 rps_data <- read.csv('data/intermediate/rps_data_long.csv')
 
 

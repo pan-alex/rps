@@ -1,4 +1,15 @@
 To Do:
+- Implement machine learning algos to work in real-time
+	- Create a rough prototype (xgboost) model
+	- Save the model in a way that can be loaded in quickly
+	- Make real-time predictions
+	- Incorporate the strategy into the GUI
+	- Try to improve the xgboost model
+
+	
+- Train additional models to play with (e.g., LSTMs)	
+
+
 - Change the output of the game results from text to image-based (appears to be easier with OOP)
 	+ Add images in response to player 1 input
 	+ Add images in response to player 2 input
@@ -10,13 +21,12 @@ To Do:
 	+ Change the colour of the image so that it is obvious who won
 	- Grey-out past moves
 
+	
 + Re-organize GUI to fit within a smaller screen or find a way to re-adjust widget/window sizes without cutting off widgets
 	+ Re-organized GUI grid, which helps it fit within a smaller screen.
 	- Still have not: Found a way to re-adjust widget/window sizes without cutting off widgets
 
-- Implement machine learning algos to work in real-time
 
-- Train additional models to play with
 
 
 Done:

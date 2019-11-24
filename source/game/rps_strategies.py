@@ -1,12 +1,11 @@
 import random
 import numpy as np
 import logging
+from source.game.rps_game import *
+
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.CRITICAL)
-OPTIONS = ['R', 'P', 'S']    # Possible game inputs.
 
-
-class InvalidInput_RPS(Exception): pass
 class InvalidStrategy_RPS(Exception): pass
 
 def strategy_random():

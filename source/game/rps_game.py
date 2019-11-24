@@ -1,4 +1,5 @@
-from source.game.rps_strategies import *
+OPTIONS = ['R', 'P', 'S']    # Possible game inputs.
+class InvalidInput_RPS(Exception): pass
 
 
 def game_message(outcome):
@@ -8,7 +9,7 @@ def game_message(outcome):
     return message
 
 
-def rps_round(input1, input2='R'):
+def rps_round(input1, input2):
     '''
     # Evaluates one round of RPS. This is the lowest level function for the game.
     :param input1: This is the player input. String. 'R', 'P', or 'S'.
