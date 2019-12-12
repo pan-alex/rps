@@ -1,4 +1,5 @@
 from source.game.rps_game import *
+import source.game.load_ml_models as ml_models
 import random
 import numpy as np
 import logging
@@ -75,9 +76,18 @@ def strategy_basic_markov(input1, outcomes):
              [[0.334, 0.314, 0.352], [0.349, 0.305, 0.346], [0.253, 0.387, 0.360]]     # Player played S
             ])
     probs = list(transition_probs[row, col])
-    n = np.random.choice(len(OPTIONS), p=probs)
+    i = np.random.choice(len(OPTIONS), p=probs)
     logging.debug(probs)
-    return OPTIONS[n]
+    return OPTIONS[i]
+
+
+def strategy_xgboost_simple(input1, outcomes):
+    if len(input1) < 3:
+        return strategy_random()
+    else:
+        model = ml_models.model_xgboost
+        throw = ml_models.make_prediction_xgboost(model, input1, outcomes)
+        return throw
 
 
 def select_strategy(strategy, input1, input2, outcomes):
@@ -98,4 +108,6 @@ def select_strategy(strategy, input1, input2, outcomes):
         return strategy_cycle(input2)
     elif strategy == 'basic_markov':
         return strategy_basic_markov(input1, outcomes)
+    elif strategy == 'xgb':
+        return strategy_xgboost_simple(input1, outcomes)
     else: raise InvalidStrategy_RPS('Invalid RPS strategy selected.')

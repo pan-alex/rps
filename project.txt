@@ -1,11 +1,13 @@
 To Do:
-- Implement machine learning algos to work in real-time
-	- Create a rough prototype (xgboost) model
-	- Save the model in a way that can be loaded in quickly
-	- Make real-time predictions
-	- Incorporate the strategy into the GUI
++ Implement machine learning algos to work in real-time [Model is integrated with the GUI but the model itself is quite bad]
+	+ Create a rough prototype (xgboost) model
+	+ Save the model in a way that can be loaded in quickly
+	+ Make real-time predictions
+	+ Incorporate the strategy into the GUI
 	- Try to improve the xgboost model
-
+		[Model currently gets stuck in easily predictable/beatable loops; ultimately any useful model will need to be able to incorporate real-time information or else it is a predictable pattern-machine]
+		- Increase # of features that the model looks at to reduce predictability
+	- Allow model to accept inputs with length < # of variables (i.e., add an NaN fill to the inputs)
 	
 - Train additional models to play with (e.g., LSTMs)	
 

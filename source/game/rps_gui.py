@@ -18,7 +18,7 @@ class rps_gui:
 
         # Strategy doesn't change until the player chooses a new one
         self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
-                      'Strategy 4': 'basic_markov'}
+                      'Strategy 4': 'basic_markov', 'Strategy 5': 'xgb'}
         self.selected_strategy = StringVar(self.frame)
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
@@ -64,8 +64,9 @@ class rps_gui:
         Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=1, column=1, sticky=S)
 
         # Reset game button
-        button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
-        button_reset.grid(row=4, column=1, sticky=N)
+        self.button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
+        self.button_reset.grid(row=4, column=1, sticky=N)
+        master.bind('r', lambda event=None: self.button_reset.invoke())
 
         # Select computer strategy
         Label(self.frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=S)
@@ -203,8 +204,9 @@ class rps_gui:
 
 
 # Initialize UI
-root = Tk()
-root.geometry('+1000+0')    # Make it appear offset
-root.title('Rock, Paper, Scissors!')
-window = rps_gui(root)
-root.mainloop()
+if __name__ == '__main__':
+    root = Tk()
+    root.geometry('+1000+0')    # Make it appear offset
+    root.title('Rock, Paper, Scissors!')
+    window = rps_gui(root)
+    root.mainloop()
