@@ -1,5 +1,5 @@
 from source.game.rps_game import *
-import source.game.load_ml_models as ml_models
+from source.game import load_ml_models
 import random
 import numpy as np
 import logging
@@ -85,8 +85,8 @@ def strategy_xgboost_simple(input1, outcomes):
     if len(input1) < 3:
         return strategy_random()
     else:
-        model = ml_models.model_xgboost
-        throw = ml_models.make_prediction_xgboost(model, input1, outcomes)
+        model = load_ml_models.model_xgboost
+        throw = load_ml_models.make_prediction_xgboost(model, input1, outcomes)
         return throw
 
 
