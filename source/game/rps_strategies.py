@@ -1,16 +1,19 @@
+from source.game.rps_game import *
+from source.game import load_ml_models
 import random
 import numpy as np
 import logging
-from source.game.rps_game import *
+
 
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.CRITICAL)
+
 
 class InvalidStrategy_RPS(Exception): pass
 
 def strategy_random():
     '''
-    :return: Randomly selects and returns 'R', 'P', or 'S'.
+    :return: Randomly selects and returns 1, 2, or 3.
     '''
     global OPTIONS
     i = random.randint(0, 2)
@@ -23,10 +26,10 @@ def strategy_cycle(input2):
     '''
     global OPTIONS
     last_input2 = input2[-1]
-    if last_input2 == 'R': return 'S'
-    elif last_input2 == 'P': return 'R'
-    elif last_input2 == 'S': return 'P'
-    else: raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
+    if last_input2 == 1: return 3
+    elif last_input2 == 2: return 1
+    elif last_input2 == 3: return 2
+    else: raise InvalidInput_RPS('Input must be a list containing 1, 2, or 3.')
 
 
 def strategy_beat_last(input1):
@@ -37,10 +40,10 @@ def strategy_beat_last(input1):
     '''
     global OPTIONS
     last_input1 = input1[-1]
-    if last_input1 == 'R': return 'P'
-    elif last_input1 == 'P': return 'S'
-    elif last_input1 == 'S': return 'R'
-    else: raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
+    if last_input1 == 1: return 2
+    elif last_input1 == 2: return 3
+    elif last_input1 == 3: return 1
+    else: raise InvalidInput_RPS('Input must be a list containing 1, 2, or 3.')
 
 def strategy_basic_markov(input1, outcomes):
     '''
@@ -61,7 +64,7 @@ def strategy_basic_markov(input1, outcomes):
         row = OPTIONS.index(last_input1)    # row 0 = R, row 1 = P, row 2 = S
         col = last_outcome + 1
     except:
-        raise InvalidInput_RPS('Input must be a list containing "R", "P", or "S".')
+        raise InvalidInput_RPS('Input must be a list containing 1, 2, or 3.')
 
 
     transition_probs = np.array(
@@ -73,9 +76,18 @@ def strategy_basic_markov(input1, outcomes):
              [[0.334, 0.314, 0.352], [0.349, 0.305, 0.346], [0.253, 0.387, 0.360]]     # Player played S
             ])
     probs = list(transition_probs[row, col])
-    n = np.random.choice(len(OPTIONS), p=probs)
+    i = np.random.choice(len(OPTIONS), p=probs)
     logging.debug(probs)
-    return OPTIONS[n]
+    return OPTIONS[i]
+
+
+def strategy_xgboost_simple(input1, outcomes):
+    if len(input1) < 3:
+        return strategy_random()
+    else:
+        model = load_ml_models.model_xgboost
+        throw = load_ml_models.make_prediction_xgboost(model, input1, outcomes)
+        return throw
 
 
 def select_strategy(strategy, input1, input2, outcomes):
@@ -96,4 +108,6 @@ def select_strategy(strategy, input1, input2, outcomes):
         return strategy_cycle(input2)
     elif strategy == 'basic_markov':
         return strategy_basic_markov(input1, outcomes)
+    elif strategy == 'xgb':
+        return strategy_xgboost_simple(input1, outcomes)
     else: raise InvalidStrategy_RPS('Invalid RPS strategy selected.')

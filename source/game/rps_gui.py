@@ -1,6 +1,6 @@
 from tkinter import *
-from source.game.rps_game import *
-import time
+from source.game.rps_strategies import *
+
 
 class rps_gui:
 
@@ -18,7 +18,7 @@ class rps_gui:
 
         # Strategy doesn't change until the player chooses a new one
         self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
-                      'Strategy 4': 'basic_markov'}
+                      'Strategy 4': 'basic_markov', 'Strategy 5': 'xgb'}
         self.selected_strategy = StringVar(self.frame)
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
@@ -64,8 +64,9 @@ class rps_gui:
         Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=1, column=1, sticky=S)
 
         # Reset game button
-        button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
-        button_reset.grid(row=4, column=1, sticky=N)
+        self.button_reset = Button(self.frame, text='Reset Score', width=12, height=3, command=self.reset_game)
+        self.button_reset.grid(row=4, column=1, sticky=N)
+        master.bind('r', lambda event=None: self.button_reset.invoke())
 
         # Select computer strategy
         Label(self.frame, text="Computer Strategy", fg='white', bg='black').grid(row=5, column=1, sticky=S)
@@ -75,12 +76,14 @@ class rps_gui:
 
     def game_button(self, button):
         '''
+        This is the function that gets called when the player clicks on one of the
+            "Rock", "Paper", or "Scissors" buttons on the GUI. Calls on `rps()`
+            to evaluate the outcome of the round. Then it updates the canvas to
+            show what moves were played and who won, it updates the score labels,
+            and it increments n_round by +1.
+
         :param button: Receives an input of 1, 2, or 3 when the Rock, Paper, or
             Scissor button is pressed (or if the corresponding number [1, 2, 3] is pressed).
-
-        :return: Calls on `rps()` to evaluate the outcome of the round. Then it
-            returns a message indicating who won in the game_output text widget,
-            updates the score labels, and increments n_round by +1.
         '''
         global OPTIONS
         input_as_number = button - 1     # Player inputs are 1, 2, 3 (to keep buttons close together)
@@ -123,16 +126,6 @@ class rps_gui:
         self.outcomes.append(rps_round(self.input1[self.n_round], self.input2[self.n_round]))
 
 
-    def count_wins_losses_draws(self, outcome):
-        '''
-        Counts the number of wins, losses, and draws in `outcome`
-        '''
-        wins = outcome.count(1)
-        losses = outcome.count(-1)
-        draws = outcome.count(0)
-        return wins, losses, draws
-
-
     def add_rps_image_to_canvas(self):
         '''
         :return: Adds images of rock, paper, of scissors hands to the bottom of the canvas.
@@ -153,6 +146,7 @@ class rps_gui:
 
 
     def determine_image_path(self, player):
+        global INPUTS_TO_STRINGS
         assert player == 1 or player == 2
         # Path to images folder
         folder_path = 'data/images/'
@@ -166,9 +160,9 @@ class rps_gui:
             last_input = self.input2[-1]
             if self.outcomes[-1] == -1: won = '_won'
             else: won = ''
-
         # Example path: 'data/images/rps_R1_won.png'
-        image_path = (folder_path + 'rps_' + last_input + str(player) + won + '.png')
+        input_string = INPUTS_TO_STRINGS[last_input]
+        image_path = (folder_path + 'rps_' + input_string + str(player) + won + '.png')
         return image_path
 
 
@@ -177,6 +171,16 @@ class rps_gui:
         self.label_wins.config(text=self.wins)
         self.label_losses.config(text=self.losses)
         self.label_draws.config(text=self.draws)
+
+
+    def count_wins_losses_draws(self, outcome):
+        '''
+        Counts the number of wins, losses, and draws in `outcome`
+        '''
+        wins = outcome.count(1)
+        losses = outcome.count(-1)
+        draws = outcome.count(0)
+        return wins, losses, draws
 
 
     def reset_game(self):
@@ -200,8 +204,9 @@ class rps_gui:
 
 
 # Initialize UI
-root = Tk()
-root.geometry('+1000+0')    # Make it appear offset
-root.title('Rock, Paper, Scissors!')
-window = rps_gui(root)
-root.mainloop()
+if __name__ == '__main__':
+    root = Tk()
+    root.geometry('+1000+0')    # Make it appear offset
+    root.title('Rock, Paper, Scissors!')
+    window = rps_gui(root)
+    root.mainloop()
