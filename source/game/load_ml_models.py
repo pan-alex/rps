@@ -36,10 +36,10 @@ def make_prediction_xgboost(model, input1, outcomes):
     df = pd.get_dummies(df)
     dtest = xgb.DMatrix(df)
 
-    # Predict, choose what beats the prediction, and translate back to 'R', 'P', or 'S'
     model_pred = int(model.predict(df))
-    # 0 = R, so throw P (2); 1 = P, so throw S (3), 2 = S, so throw R (1)
-    model_pred_to_throw = {0:2, 1:3, 2:1}
+    model_pred_to_throw = {0:2,    # 0 = R, so throw P (2)
+                           1:3,    # 1 = P, so throw S (3)
+                           2:1}    # 2 = S, so throw R (1)
     throw = model_pred_to_throw[model_pred]
 
     return throw
