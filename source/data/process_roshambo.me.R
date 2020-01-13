@@ -17,17 +17,14 @@ winner <- function(input1, input2){
 setwd('../../')
 rps_raw <- read_xlsx('data/raw/roshambo.me.xlsx')
 
+###
+#### General Processing to make the data easier to work with
+###
 
-# Convert throws to factors. 1 is rock, 2 is paper, 3 is scissors, 0 is forfeit.
-# rps_data <- rps_raw %>% mutate(
-#     player_one_throw = factor(player_one_throw),
-#     player_two_throw = factor(player_two_throw)
-# )
-
-# Add row for who won.
+# Add row for who won
 rps_data <- rps_raw %>% mutate(
-    player_one_win = winner(player_one_throw, player_two_throw),
-    player_two_win = -(player_one_win)
+  player_one_win = winner(player_one_throw, player_two_throw),
+  player_two_win = -(player_one_win)
 )
 
 # Convert game_round_id from cumulate to reset for each new game
@@ -44,12 +41,20 @@ rps_data <- rps_data %>% mutate(
 rps_p1 <- rps_data %>% 
   mutate(throw = player_one_throw, won = player_one_win) %>%
   select(game_id, round, throw, won) 
-  
+
+# Note: game_id is cumulative now (player 2 throws are recorded as separate games)
 rps_p2 <- rps_data %>% 
   mutate(throw = player_two_throw, won = player_two_win, game_id = game_id + max(game_id)) %>%
   select(game_id, round, throw, won)
 
 rps_p1_p2_rbind <- rbind(rps_p1, rps_p2) %>% filter(throw != 0)
+
+
+###
+#### Data Processing to long format (every throw from every player is a row)
+###
+
+# This format is for tree-based learning methods
 
 # Not super elegant but seems to work.
 rps_data_12_past_moves <- rps_p1_p2_rbind %>% 
@@ -83,3 +88,26 @@ write_csv(rps_data, 'data/intermediate/rps_data_long.csv')
 write_csv(rps_data_12_past_moves, 'data/intermediate/rps_data_12_past_moves.csv')
 
 
+###
+#### Data Processing for Sequence (every row corresponds to a sequence of throws from 1 game)
+###
+
+# This format is for RNNs
+
+# Start with the previous data frame since it already contains rows with the sequence 
+# of all throws for each game. I just need to remove all rounds except for the last
+# round for each game.
+
+
+# First remove variables that I won't be using:
+rps_sequence <- rps_data_12_past_moves %>% 
+  select(-won, -won_minus1, -won_minus2, -won_minus3, -won_minus4, -won_minus5, -won_minus6,
+         -won_minus7, -won_minus8, -won_minus9, -won_minus10, -won_minus11, -won_minus12)
+
+# Remove the other rounds (only keep the last round)
+rps_sequence <- rps_sequence %>% group_by(game_id) %>% top_n(1, round)
+
+# Remove additional variables:
+rps_sequence <- rps_sequence %>% ungroup() %>% select(-game_id, -round)
+
+write_csv(rps_data, 'data/intermediate/rps_data_sequence.csv')
