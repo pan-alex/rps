@@ -92,13 +92,13 @@ def strategy_xgboost_simple(input1, outcomes):
 
 def select_strategy(strategy, input1, input2, outcomes):
     # If any of these fail there was an error in an earlier step
-    assert type(input1) == list
-    assert type(input2) == list
-    assert type(outcomes) == list
-    assert len(input1) == len(input2)
-    assert len(input1) == len(outcomes)
-    assert all([input in OPTIONS for input in input1])
-    assert all([input in OPTIONS for input in input2])
+    assert type(input1) == list, 'input1 must be a list'
+    assert type(input2) == list, 'input2 must be a list'
+    assert type(outcomes) == list, 'outcomes must be a list'
+    assert len(input1) == len(input2), 'len(input1) == len(input2)'
+    assert len(input1) == len(outcomes), 'len(input1) == len(outcomes)'
+    assert all([input in OPTIONS for input in input1]), 'input not in OPTIONS'
+    assert all([input in OPTIONS for input in input2]), 'input not in OPTIONS'
 
     if strategy == 'random':
         return strategy_random()
