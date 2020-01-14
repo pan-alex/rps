@@ -47,6 +47,7 @@ rps_p2 <- rps_data %>%
   mutate(throw = player_two_throw, won = player_two_win, game_id = game_id + max(game_id)) %>%
   select(game_id, round, throw, won)
 
+# Throw out forfeits
 rps_p1_p2_rbind <- rbind(rps_p1, rps_p2) %>% filter(throw != 0)
 
 
@@ -83,6 +84,10 @@ rps_data_12_past_moves <- rps_p1_p2_rbind %>%
          won_minus11 = ifelse(round > lag(round), lag(won_minus10), NA),
          won_minus12 = ifelse(round > lag(round), lag(won_minus11), NA))
 
+# To ensure the models have at least two rounds worth to predict on, I
+# will filter the data to only include games that at least go to round 2.
+rps_data_12_past_moves <- rps_data_12_past_moves %>%
+    filter(!is.na(minus1))
 
 write_csv(rps_data, 'data/intermediate/rps_data_long.csv')
 write_csv(rps_data_12_past_moves, 'data/intermediate/rps_data_12_past_moves.csv')
@@ -110,4 +115,4 @@ rps_sequence <- rps_sequence %>% group_by(game_id) %>% top_n(1, round)
 # Remove additional variables:
 rps_sequence <- rps_sequence %>% ungroup() %>% select(-game_id, -round)
 
-write_csv(rps_data, 'data/intermediate/rps_data_sequence.csv')
+write_csv(rps_sequence, 'data/intermediate/rps_data_sequence.csv')
