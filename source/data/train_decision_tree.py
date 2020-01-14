@@ -10,12 +10,6 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 rps_data = pd.read_csv('data/intermediate/rps_data_12_past_moves.csv')
 
-# Since many of the RPS games in the data are only 1 round (where there are no
-# actual predictors available other than the "average" move) these would likely
-# just adding noise to the model.
-# To ensure the model has at least two predictors ('minus1' and 'outcome'), I
-# will filter the data to only include games that at least go to round 2.
-rps_data = rps_data.dropna(subset=['minus1'])
 
 features = ['minus1', 'minus2', 'minus3', 'minus4', 'minus5', 'minus6',
             'minus7', 'minus8', 'minus10', 'minus11', 'minus12',
