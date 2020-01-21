@@ -38,7 +38,7 @@ model.fit(x_train, y_train)
 
 
 # bst.get_score(importance_type='gain')
-with open('source/data/xgb_model.pkl', 'wb') as f:
+with open('source/learning/xgb_model.pkl', 'wb') as f:
     pickle.dump(model, f)
 
 

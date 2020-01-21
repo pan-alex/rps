@@ -4,7 +4,7 @@ import pandas as pd
 import pickle
 import xgboost as xgb
 
-with open('source/data/xgb_model.pkl', 'rb') as f:
+with open('source/learning/xgb_model.pkl', 'rb') as f:
     model_xgboost = pickle.load(f)
 
 def make_prediction_xgboost(model, input1, outcomes):

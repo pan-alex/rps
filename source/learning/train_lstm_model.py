@@ -42,12 +42,12 @@ plt.plot(history.history['loss'])
 ###
 # # serialize model to JSON
 model_json = model.to_json()
-with open("source/data/lstm_model2.json", "w") as json_file:
+with open("source/learning/lstm_model2.json", "w") as json_file:
     json_file.write(model_json)
-model.save_weights("source/data/lstm_model2.h5")
+model.save_weights("source/learning/lstm_model2.h5")
 
 # # load json and create model
-# with open('source/data/lstm_model1.json', 'r') as json_file:
+# with open('source/learning/lstm_model1.json', 'r') as json_file:
 #     loaded_model_json = json_file.read()
 # loaded_model = model_from_json(loaded_model_json)
-# loaded_model.load_weights("source/data/model.h5")
+# loaded_model.load_weights("source/learning/model.h5")
