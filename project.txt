@@ -14,7 +14,8 @@ To Do:
 - Train additional models to play with (e.g., LSTMs)
 	+ Process data for an RNN
 	+ Develop working prototype for a model
-	- Improve the model (Try different architectures)
+	+ Improve the model (Try different architectures)
+		[Good enough for now; may try to improve later. But achieving validation/test accuracy close to 39%]
 	- Implement a way to make real-time predictions that maximize Expected Value (i.e., maximize wins AND minimize losses)
 		[Should this be deterministic or probabilistic?]
 	- Incorporate strategy into the GUI
