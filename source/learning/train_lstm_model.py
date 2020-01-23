@@ -29,11 +29,12 @@ model.add(LSTM(units=40, batch_input_shape=(None, T_x, n_x), return_sequences=Fa
 model.add(Dense(3, activation='softmax'))
 
 # Initialize model (note model can be trained continuously as long as it is not re-initialized)
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['categorical_accuracy'])
-model.fit(x_train, y_train, epochs=40, validation_data=(x_test, y_test), shuffle=False, verbose=2)
+# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['categorical_accuracy'])
+model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test), shuffle=False, verbose=2)
 
 # Assess model
 plt.plot(model.history.history['loss'])
+plt.plot(model.history.history['val_loss'])
 
 results = model.predict(x_test)
 from source.learning.model_assessment_utils import *
@@ -50,21 +51,28 @@ np.sum(outcomes)
 
 
 # Save the model; Trained on 50 epochs so far
-with open('source/learning/lstm_model.pkl', 'wb') as f:
+with open('source/learning/lstm_model1_150epochs.pkl', 'wb') as f:
     import pickle
     pickle.dump(model, f)
+
+
+# with open('source/learning/lstm_model.pkl', 'rb') as f:
+#     model1 = pickle.load(f)
+
 
 
 
 
 #################################### Model 2
 
-
-
 # Define model architecture
 model2 = Sequential()
-model2.add(LSTM(units=2, batch_input_shape=(None, T_x, n_x), return_sequences=False,
-               dropout=0.5, recurrent_dropout=0))
+model2.add(LSTM(units=60, batch_input_shape=(None, T_x, n_x), return_sequences=True,
+               dropout=0.5, recurrent_dropout=0.5))
+model2.add(LSTM(units=60, batch_input_shape=(None, T_x, n_x), return_sequences=True,
+               dropout=0.5, recurrent_dropout=0.5))
+model2.add(LSTM(units=60, batch_input_shape=(None, T_x, n_x), return_sequences=False,
+               dropout=0.5, recurrent_dropout=0.5))
 model2.add(Dense(3, activation='softmax'))
 
 # Initialize model2 (note model can be trained continuously as long as it is not re-initialized)
@@ -72,7 +80,8 @@ model2.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['cate
 model2.fit(x_train, y_train, epochs=200, validation_data=(x_test, y_test), shuffle=False, verbose=2)
 
 # Assess the model:
-plt.plot(model2.history.history['loss'])    # After 50 - 100 epochs the change in loss is negligible.
+plt.plot(model2.history.history['loss'])
+plt.plot(model2.history.history['val_loss'])
 results = model2.predict(x_test)
 
 # 1. Assess categorical accuracy
@@ -88,9 +97,9 @@ np.sum(outcomes)
 
 
 # Save the model
-# with open('source/learning/lstm_model2.pkl', 'wb') as f:
-#     import pickle
-#     pickle.dump(model2, f)
+with open('source/learning/lstm_model2_200epochs.pkl', 'wb') as f:
+    import pickle
+    pickle.dump(model2, f)
 
 
 
