@@ -1,3 +1,4 @@
+from source.learning.model_assessment_utils import *
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -43,11 +44,6 @@ from source.learning.model_assessment_utils import *
 # A random guesser would have an error of 0.333
 categorical_accuracy(results, y_test)
 
-# 2. Assess expected value
-# If a win is 1, a loss is -1, and a loss is 0, a random guesser would have an EV = 0
-outcomes = expected_value(results, y_test)
-pd.Series(outcomes).value_counts()
-np.sum(outcomes)
 
 
 # Save the model; Trained on 50 epochs so far
@@ -87,13 +83,6 @@ results = model2.predict(x_test)
 # 1. Assess categorical accuracy
 # A random guesser would have an error of 0.333
 categorical_accuracy(results, y_test)
-
-# 2. Assess expected value
-# If a win is 1, a loss is -1, and a loss is 0, a random guesser would have an EV = 0
-outcomes = expected_value(results, y_test)
-pd.Series(outcomes).value_counts()
-np.sum(outcomes)
-
 
 
 # Save the model
