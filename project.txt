@@ -16,9 +16,9 @@ To Do:
 	+ Develop working prototype for a model
 	+ Improve the model (Try different architectures)
 		[Good enough for now; may try to improve later. But achieving validation/test accuracy close to 39%]
-	- Implement a way to make real-time predictions that maximize Expected Value (i.e., maximize wins AND minimize losses)
+	+ Implement a way to make real-time predictions that maximize Expected Value (i.e., maximize wins AND minimize losses)
 		[Should this be deterministic or probabilistic?]
-	- Incorporate strategy into the GUI
+	+ Incorporate strategy into the GUI
 	- Implement a way to make real-time adjustments to weights when facing a particular opponent
 		[Save the results permanently or not? Could be messed up by someone spamming options]
 		[How to weight the other user's moves? VS. 133,000 other inputs their moves will barely affect the weights. Will have to find a way to gradually switch to a model based 100% on the user's moves]

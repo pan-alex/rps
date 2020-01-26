@@ -90,6 +90,11 @@ def strategy_xgboost_simple(input1, outcomes):
         return throw
 
 
+def strategy_lstm(input1, method):
+    model = load_ml_models.model2_lstm
+    throw = load_ml_models.make_prediction_lstm(model, input1, method)
+    return throw
+
 def select_strategy(strategy, input1, input2, outcomes):
     # If any of these fail there was an error in an earlier step
     assert type(input1) == list, 'input1 must be a list'
@@ -110,4 +115,11 @@ def select_strategy(strategy, input1, input2, outcomes):
         return strategy_basic_markov(input1, outcomes)
     elif strategy == 'xgb':
         return strategy_xgboost_simple(input1, outcomes)
+    elif strategy == 'lstm_d':
+        return strategy_lstm(input1, method='deterministic')
+    elif strategy == 'lstm_p':
+        return strategy_lstm(input1, method='probabilistic')
+    elif strategy == 'lstm_ev':
+        return strategy_lstm(input1, method='expected value')
+
     else: raise InvalidStrategy_RPS('Invalid RPS strategy selected.')

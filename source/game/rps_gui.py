@@ -17,8 +17,11 @@ class rps_gui:
         self.wins, self.losses, self.draws = 0, 0, 0
 
         # Strategy doesn't change until the player chooses a new one
-        self.strategies = {'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
-                      'Strategy 4': 'basic_markov', 'Strategy 5': 'xgb'}
+        self.strategies = {
+            'Strategy 1': 'random', 'Strategy 2': 'beat_last', 'Strategy 3': 'cycle',
+            'Strategy 4': 'basic_markov', 'Strategy 5': 'xgb', 'lstm_d': 'lstm_d',
+            'lstm_p': 'lstm_p', 'lstm_ev': 'lstm_ev'
+        }
         self.selected_strategy = StringVar(self.frame)
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 

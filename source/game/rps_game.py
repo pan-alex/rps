@@ -15,7 +15,8 @@ def rps_round(input1, input2):
     '''
     global OPTIONS
     if (input1 not in OPTIONS) or (input2 not in OPTIONS):
-        raise InvalidInput_RPS('Input must be 1 (Rock), 2 (Paper), or 3 (Scissors).')
+        raise InvalidInput_RPS('Input must be 1 (Rock), 2 (Paper), or 3 (Scissors).'
+                               f'You entered {input1} and {input2}.')
 
     r, p, s = OPTIONS
     win_matrix = {r: {r: 0,  # i.e., if input1 is rock, input2 is rock = tie
