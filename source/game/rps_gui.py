@@ -26,11 +26,22 @@ class rps_gui:
         self.selected_strategy.set('Strategy 2')  # Set default strategy
 
 
-        ##### Define basic elements of GUI (buttons, canvas)  [Column 0]
+        ##### Define basic elements of GUI (buttons, canvas, score box)  [Column 0]
         # Canvas for RPS image outputs
-        self.game_output_canvas = Canvas(self.frame, height=700, width=400)
+        # Scroll region is for the scroll bar; top range of -6300 to 700 allows for 100 images (70x/ea)
+        self.game_output_canvas = Canvas(self.frame, height=700, width=400, scrollregion=(0, -6300, 400, 700))
         self.game_output_canvas.grid(row=4, column=0, rowspan=10, sticky=N)
 
+        # Add scroll bar to canvas
+        self.vbar = Scrollbar(self.frame, orient=VERTICAL, command=self.game_output_canvas.yview)
+        self.vbar.grid(row=4, column=0, rowspan=10, sticky=N+S+E)
+        self.game_output_canvas.config(yscrollcommand=self.vbar.set)
+        # Bind mouse wheel to scroll bar (each scroll = 1/100th of the canvas)
+        self.frame.bind_all(
+                '<MouseWheel>',
+                lambda event: self.game_output_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"))
+
+        ### Game buttons
         # Button for "Rock"
         self.button_rock = Button(self.frame, text='Rock (1)', width=10, height=3,
                                   command=lambda: self.game_button(1))
@@ -62,6 +73,7 @@ class rps_gui:
         Label(self.frame, text='Ties', fg='white', bg='black').grid(row=1, column=0, sticky=E)
         self.label_draws = Label(self.frame, text=self.draws, fg='white', bg='black')
         self.label_draws.grid(row=2, column=0, sticky=E)
+
 
         ##### Buttons for Settings [Column 1]
         Label(self.frame, text='Settings', fg='white', bg='black', width=30).grid(row=1, column=1, sticky=S)
@@ -95,7 +107,6 @@ class rps_gui:
         self.rps(throw, strategy)
         self.n_round += 1
 
-        # self.update_text_output()
         # Update the dashboard (move images, insert new image, change scores)
         # Note the move of -70 is based on images of height 70px.
         self.game_output_canvas.move(ALL, 0, -70)
