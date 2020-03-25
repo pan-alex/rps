@@ -23,24 +23,10 @@ To Do:
 		[Save the results permanently or not? Could be messed up by someone spamming options]
 		[How to weight the other user's moves? VS. 133,000 other inputs their moves will barely affect the weights. Will have to find a way to gradually switch to a model based 100% on the user's moves]
 
-
-- Change the output of the game results from text to image-based (appears to be easier with OOP)
-	+ Add images in response to player 1 input
-	+ Add images in response to player 2 input
-	+ Keep a history of past 10 turns in the form of images
-		+ Find a way to add multiple image objects cleanly
-		+ Find a way to move multiple image objects together cleanly
-	+ Every time a new turn is played, move up all other images
-	+ Add a scroll bar to the canvas so that the history can be seen?
-	+ Change the colour of the image so that it is obvious who won
-	- Grey-out past moves
-
 	
 + Re-organize GUI to fit within a smaller screen or find a way to re-adjust widget/window sizes without cutting off widgets
 	+ Re-organized GUI grid, which helps it fit within a smaller screen.
 	- Still have not: Found a way to re-adjust widget/window sizes without cutting off widgets
-
-
 
 
 Done:
@@ -50,3 +36,4 @@ Done:
 + maybe: selection of opponent strategy
 + Add unit tests
 + Change GUI to object-oriented
++ Change the output of the game results from text to image-based

@@ -12,6 +12,8 @@ class rps_gui:
         # Globals that must be reset when the game resets
         self.p1_throw_history = []
         self.p2_throw_history = []
+        self.image_path1 = []
+        self.image_path2 = []
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
@@ -39,7 +41,7 @@ class rps_gui:
         # Bind mouse wheel to scroll bar (each scroll = 1/100th of the canvas)
         self.frame.bind_all(
                 '<MouseWheel>',
-                lambda event: self.game_output_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"))
+                lambda event: self.game_output_canvas.yview_scroll(int(event.delta/-120), 'units'))
 
         ### Game buttons
         # Button for "Rock"
@@ -111,6 +113,8 @@ class rps_gui:
         # Note the move of -70 is based on images of height 70px.
         self.game_output_canvas.move(ALL, 0, -70)
         self.add_rps_image_to_canvas()
+        if self.n_round > 1:
+            self.grey_out_previous_image()
         self.update_score_buttons()
 
 
@@ -148,15 +152,32 @@ class rps_gui:
         # Note the canvas image coordinates are based on a 400x700 canvas, and
         # is designed to fit 10 rounds worth of images in the canvas.
         # Add player 1 image
-        image_path1 = self.determine_image_path(player=1)
-        pi_throw1 = PhotoImage(master=self.game_output_canvas, file=image_path1)
+        self.image_path1.append(self.determine_image_path(player=1))
+        pi_throw1 = PhotoImage(master=self.game_output_canvas, file=self.image_path1[-1] + '.png')
         self.game_output_canvas.create_image(75, 665, image=pi_throw1)
         self.p1_throw_history.append(pi_throw1)    # Keeps track of image representations on the Canvas
         # Add player 2 image
-        image_path2 = self.determine_image_path(player=2)
-        pi_throw2 = PhotoImage(master=self.game_output_canvas, file=image_path2)
+        self.image_path2.append(self.determine_image_path(player=2))
+        pi_throw2 = PhotoImage(master=self.game_output_canvas, file=self.image_path2[-1] + '.png')
         self.game_output_canvas.create_image(272, 665, image=pi_throw2)
         self.p2_throw_history.append(pi_throw2)    # Keeps track of image representations on the Canvas
+
+
+    def grey_out_previous_image(self):
+        # Grey out the previous move (2nd most recent move)
+
+        # Replace player 1 image with greyed version
+        self.image_path1[-2] = self.image_path1[-2] + '_greyed'
+        pi_throw1 = PhotoImage(master=self.game_output_canvas, file=self.image_path1[-2] + '.png')
+        self.game_output_canvas.create_image(75, 595, image=pi_throw1)
+        self.p1_throw_history[-2] = pi_throw1    # Keeps track of image representations on the Canvas
+
+        # Replace player 2 image with greyed version
+        self.image_path2[-2] = self.image_path2[-2] + '_greyed'
+        pi_throw2 = PhotoImage(master=self.game_output_canvas, file=self.image_path2[-2] + '.png')
+        self.game_output_canvas.create_image(272, 595, image=pi_throw2)
+        self.p2_throw_history[-2] = pi_throw2    # Keeps track of image representations on the Canvas
+
 
 
     def determine_image_path(self, player):
@@ -176,7 +197,7 @@ class rps_gui:
             else: won = ''
         # Example path: 'data/images/rps_R1_won.png'
         input_string = INPUTS_TO_STRINGS[last_input]
-        image_path = (folder_path + 'rps_' + input_string + str(player) + won + '.png')
+        image_path = (folder_path + 'rps_' + input_string + str(player) + won)
         return image_path
 
 
@@ -208,6 +229,8 @@ class rps_gui:
         # Reset globals
         self.p1_throw_history = []
         self.p2_throw_history = []
+        self.image_path1 = []
+        self.image_path2 = []
         self.n_round = 0
         self.input1, self.input2, self.outcomes = [], [], []
         self.wins, self.losses, self.draws = 0, 0, 0
